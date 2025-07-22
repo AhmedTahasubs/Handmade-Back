@@ -51,6 +51,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepo>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Add OpenAPI with Bearer Authentication Support
 builder.Services.AddOpenApi("v1", options =>

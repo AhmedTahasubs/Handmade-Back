@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Models.Domain;
+using Models.DTOs;
 using Models.DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace Models.DTOs.Mapper
         public MappingConfig()
         {
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
+            CreateMap<Product, ProductDisplayDTO>();
+            CreateMap<ProductUpdateDTO, Product>();
+            CreateMap<ProductCreateDTO, Product>();
         }
     }
 }
