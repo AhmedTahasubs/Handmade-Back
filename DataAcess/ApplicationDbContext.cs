@@ -14,6 +14,11 @@ namespace DataAcess
         }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<Image> Image { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<CustomRequest> CustomRequests { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
