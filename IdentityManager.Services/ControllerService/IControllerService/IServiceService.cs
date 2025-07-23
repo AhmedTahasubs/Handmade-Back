@@ -1,5 +1,5 @@
 ﻿using Models.Domain;
-using Models.DTOs.Category;
+using Models.DTOs.Categories;
 using Models.DTOs.Service;
 using System;
 using System.Collections.Generic;

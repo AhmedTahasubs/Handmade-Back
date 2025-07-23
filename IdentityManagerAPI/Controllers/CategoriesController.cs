@@ -1,7 +1,8 @@
-﻿using IdentityManager.Services.ControllerService.IControllerService;
+﻿using System.Security.Claims;
+using IdentityManager.Services.ControllerService.IControllerService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Models.DTOs.Category;
+using Models.DTOs.Categories;
 
 namespace IdentityManagerAPI.Controllers
 {
@@ -29,12 +30,20 @@ namespace IdentityManagerAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CategoryDto dto)
-            => Ok(await _service.CreateAsync(dto));
+        public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
+        {
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			return Ok(await _service.CreateAsync(userId,dto));
+		}
+
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CategoryDto dto)
-            => Ok(await _service.UpdateAsync(id, dto));
+        public async Task<IActionResult> Update( int id, [FromBody] CategoryDto dto)
+        {
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			return Ok(await _service.UpdateAsync(userId,id, dto));
+		}
+            
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

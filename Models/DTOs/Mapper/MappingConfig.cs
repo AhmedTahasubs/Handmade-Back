@@ -6,6 +6,8 @@ using Models.DTOs.CustomRequestDTO;
 using Models.DTOs.OrderDTO;
 using Models.DTOs.OrderItemDTO;
 using System;
+using Models.DTOs.Categories;
+//using Models.DTOs.Category;
 
 namespace Models.DTOs.Mapper
 {
@@ -16,8 +18,10 @@ namespace Models.DTOs.Mapper
             // User
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
 
-            // Product
-            CreateMap<Product, ProductDisplayDTO>();
+			//Category
+			CreateMap<CreateCategoryDto, Category>().ReverseMap();
+			// Product
+			CreateMap<Product, ProductDisplayDTO>();
             CreateMap<ProductUpdateDTO, Product>();
             CreateMap<ProductCreateDTO, Product>();
 
