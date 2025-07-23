@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Models.Domain;
+using Models.DTOs;
+using Models.DTOs.User;
 using Models.DTOs.CustomRequestDTO;
 using Models.DTOs.OrderDTO;
 using Models.DTOs.OrderItemDTO;
-using Models.DTOs.User;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Models.DTOs.Mapper
 {
@@ -16,8 +13,13 @@ namespace Models.DTOs.Mapper
     {
         public MappingConfig()
         {
+            // User
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
 
+            // Product
+            CreateMap<Product, ProductDisplayDTO>();
+            CreateMap<ProductUpdateDTO, Product>();
+            CreateMap<ProductCreateDTO, Product>();
 
             // Order
             CreateMap<Order, OrderReadDto>();
