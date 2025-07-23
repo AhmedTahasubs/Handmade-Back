@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Domain;
-using Models.DTOs.Category;
+using Models.DTOs.Categories;
 using Models.DTOs.Service;
 
 namespace IdentityManagerAPI.Controllers
@@ -16,7 +16,6 @@ namespace IdentityManagerAPI.Controllers
         public ServiceController(IServiceService service)
         {
             this.service = service;
-
         }
         [HttpGet]
         public IActionResult GetAll() => Ok(service.GetAll());

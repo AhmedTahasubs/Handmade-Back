@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models.DTOs;
-using Models.DTOs.Category;
+using Models.DTOs.Categories;
 
 namespace IdentityManager.Services.ControllerService.IControllerService
 {
@@ -12,8 +12,8 @@ namespace IdentityManager.Services.ControllerService.IControllerService
     {
         Task<IEnumerable<CategoryDto>> GetAllAsync();
         Task<CategoryDto> GetByIdAsync(int id);
-        Task<CategoryDto> CreateAsync(CategoryDto dto);
-        Task<CategoryDto> UpdateAsync(int id, CategoryDto dto);
+        Task<CategoryDto> CreateAsync(string? userId,CreateCategoryDto dto);
+        Task<CategoryDto> UpdateAsync(string? userId, int id, CategoryDto dto);
         Task<bool> DeleteAsync(int id);
     }
 }

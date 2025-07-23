@@ -19,7 +19,7 @@ namespace DataAcess.Repos
             _db = db;
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync() => await _db.Categories.ToListAsync();
+        public async Task<IEnumerable<Category>> GetAllAsync() => await _db.Categories.Where(c => !c.IsDeleted).ToListAsync();
 
         public async Task<Category> GetByIdAsync(int id) => await _db.Categories.FindAsync(id);
 
@@ -41,8 +41,8 @@ namespace DataAcess.Repos
         {
             var category = await _db.Categories.FindAsync(id);
             if (category == null) return false;
-
-            _db.Categories.Remove(category);
+            category.IsDeleted = true;
+            _db.Categories.Update(category);
             await _db.SaveChangesAsync();
             return true;
         }
