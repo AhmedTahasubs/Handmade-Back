@@ -46,7 +46,12 @@ builder.Services.AddScoped<RoleManager<IdentityRole>>();
 // Add Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IServiceReviewRepository, ServiceReviewRepository>();
+builder.Services.AddScoped<IServiceReviewService, ServiceReviewService>();
 
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

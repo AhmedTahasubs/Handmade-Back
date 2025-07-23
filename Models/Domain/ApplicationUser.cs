@@ -34,6 +34,8 @@ namespace Models.Domain
 		public bool IsBlackListed { get; set; }
 
 		public string? Bio { get; set; }
+        public ICollection<Service> Services { get; set; }
+        public ICollection<ServiceReview> ServiceReviews { get; set; }
 
-	}
+    }
 }
