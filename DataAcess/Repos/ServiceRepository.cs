@@ -1,0 +1,61 @@
+﻿using DataAcess.Repos.IRepos;
+using Microsoft.EntityFrameworkCore;
+using Models.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataAcess.Repos
+{
+    public class ServiceRepository : IServiceRepository
+    {
+        private readonly ApplicationDbContext db;
+        public ServiceRepository(ApplicationDbContext db)
+        {
+            this.db = db;
+        }
+        public Service ADD(Service service)
+        {
+            db.Add(service);
+            return service;
+
+        }
+
+        public IEnumerable<Service> GetAll()
+        {
+            return db.Services.Include(s=>s.Seller)
+                .Include(c=>c.Category)
+                .Include(s=>s.Reviews)
+                .ToList();
+        }
+
+        public Service Getbyid(int id)
+        {
+            return db.Services.Include(s => s.Seller)
+                .Include(c => c.Category)
+                .Include(s => s.Reviews).FirstOrDefault(s => s.Id == id);
+
+        }
+
+        public bool Delete(int id)
+        {
+           var temp = db.Services.SingleOrDefault(s=>s.Id ==id);
+            if (temp == null) { return false; }
+            db.Services.Remove(temp);
+            return true;
+        }
+
+        public Service UPDATE(Service service)
+        {
+           db.Update(service);
+            return service;
+        }
+
+        public void SavaChange()
+        {
+            db.SaveChanges();
+        }
+    }
+}
