@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Models.DTOs;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
 
 namespace IdentityManager.Services.ControllerService
 {
@@ -14,47 +17,94 @@ namespace IdentityManager.Services.ControllerService
     {
         private readonly IProductRepository productRepo;
         private readonly IImageRepository _imageRepo;
+        private readonly IMapper mapper;
 
-        public ProductService(IProductRepository productRepository, IImageRepository imageRepository)
+        public ProductService(IProductRepository productRepository, IImageRepository imageRepository, IMapper _mapper)
         {
             productRepo = productRepository;
             _imageRepo = imageRepository;
+            mapper = _mapper;
         }
-        private void ValidateFileUpload(ImageUploadRequestDto request)
+        private void ValidateFileUpload(IFormFile File)
         {
-            if (request.File == null)
+            if (File == null)
             {
                 throw new Exception("File is required");
             }
-            if (request.File.Length == 0)
+            if (File.Length == 0)
             {
                 throw new Exception("File is empty");
             }
-            if (request.File.Length > 10 * 1024 * 1024)
+            if (File.Length > 10 * 1024 * 1024)
             {
                 throw new Exception("File is too large");
             }
-            if (request.File.ContentType != "image/jpeg" && request.File.ContentType != "image/png")
+            if (File.ContentType != "image/jpeg" && File.ContentType != "image/png")
             {
                 throw new Exception("File is not an image");
             }
         }
-        public async Task<int> UploadProductImageAsync(ImageUploadRequestDto request)
+        public async Task<int> UploadProductImageAsync(IFormFile File)
         {
 
-            ValidateFileUpload(request);
+            ValidateFileUpload(File);
 
             var image = new Image
             {
-                File = request.File,
+                File = File,
                 FileName = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
-                FileExtension = Path.GetExtension(request.File.FileName),
-                FileSize = request.File.Length
+                FileExtension = Path.GetExtension(File.FileName),
+                FileSize = File.Length
             };
 
             await _imageRepo.Upload(image);
 
             return image.Id;
+        }
+
+        public async Task<IEnumerable<ProductDisplayDTO>> GetAllDisplayDTOs()
+        {
+            return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProducts());
+        }
+
+        public async Task<ProductDisplayDTO?> GetById(int id)
+        {
+            Product? p = await productRepo.GetProductByIdAsync(id);
+            if (p == null)
+                return null;
+            return mapper.Map<ProductDisplayDTO>(p);
+
+        }
+
+        public async Task<ProductDisplayDTO> Create(ProductCreateDTO dto)
+        {
+            Product p = mapper.Map<Product>(dto);
+            p.ImageId = await UploadProductImageAsync(dto.File);
+            await productRepo.CreateProductAsync(p);
+            await productRepo.SaveAsync();
+            return mapper.Map<ProductDisplayDTO>(p);
+        }
+
+        public async Task<ProductDisplayDTO> Update(ProductUpdateDTO dto)
+        {
+            Product? existing = await productRepo.GetProductByIdAsync(dto.Id);
+            if (existing == null)
+            {
+                return null;
+            }
+            mapper.Map(dto, existing);
+            existing.ImageId = await UploadProductImageAsync(dto.File);
+            await productRepo.UpdateProductAsync(existing);
+            await productRepo.SaveAsync();
+            return mapper.Map<ProductDisplayDTO>(existing);
+        }
+
+        public async Task Delete(Product p)
+        {
+            await productRepo.DeleteProductAsync(p);
+            await productRepo.SaveAsync();
+
+
         }
     }
 }
