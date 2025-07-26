@@ -24,7 +24,7 @@ namespace IdentityManager.Services.ControllerService
             return await _userRepository.Login(loginRequestDTO);
         }
 
-        public async Task<object> RegisterAsync(RegisterRequestDTO registerRequestDTO)
+        public async Task<object> RegisterAdminAsync(RegisterRequestDTO registerRequestDTO)
         {
             var emailExist = await _userRepository.GetAsync(user => user.Email == registerRequestDTO.Email);
             if (emailExist != null)
@@ -32,7 +32,27 @@ namespace IdentityManager.Services.ControllerService
                 throw new ValidationException("Email Already exists");
             }
 
-            return await _userRepository.Register(registerRequestDTO);
+            return await _userRepository.RegisterAdmin(registerRequestDTO);
+        }
+        public async Task<object> RegisterSellerAsync(SellerRegisterDto sellerRegisterDto)
+        {
+            var emailExist = await _userRepository.GetAsync(user => user.Email == sellerRegisterDto.Email);
+            if (emailExist != null)
+            {
+                throw new ValidationException("Email Already exists");
+            }
+
+            return await _userRepository.RegisterSeller(sellerRegisterDto);
+        }
+        public async Task<object> RegisterCustomerAsync(CustomerRegisterDto customerRegisterDto)
+        {
+            var emailExist = await _userRepository.GetAsync(user => user.Email == customerRegisterDto.Email);
+            if (emailExist != null)
+            {
+                throw new ValidationException("Email Already exists");
+            }
+
+            return await _userRepository.RegisterCustomer(customerRegisterDto);
         }
     }
 }
