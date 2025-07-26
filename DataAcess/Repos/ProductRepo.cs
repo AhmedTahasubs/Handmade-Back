@@ -23,13 +23,11 @@ namespace DataAcess.Repos
         public async Task CreateProductAsync(Product product)
         {
             await db.Products.AddAsync(product);
-            await db.SaveChangesAsync();
         }
 
         public async Task DeleteProductAsync(Product p)
         {
             db.Products.Remove(p);
-            await db.SaveChangesAsync();
         }
 
         public async Task<List<Product>> GetAllProductsBySeriviceId(int seriviceId)
@@ -50,7 +48,11 @@ namespace DataAcess.Repos
         public async Task UpdateProductAsync(Product product)
         {
             db.Products.Update(product);
-            await db.SaveChangesAsync();
+        }
+
+        public async Task<int> SaveAsync()
+        {
+           return await db.SaveChangesAsync();
         }
     }
 }

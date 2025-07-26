@@ -1,4 +1,7 @@
-﻿using Models.DTOs.image;
+﻿using Microsoft.AspNetCore.Http;
+using Models.Domain;
+using Models.DTOs;
+using Models.DTOs.image;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,11 @@ namespace IdentityManager.Services.ControllerService.IControllerService
 {
     public interface IProductService
     {
-        Task<int> UploadProductImageAsync(ImageUploadRequestDto request);
+        Task<IEnumerable<ProductDisplayDTO>> GetAllDisplayDTOs();
+        Task<ProductDisplayDTO> GetById(int id);
+        Task<ProductDisplayDTO> Create(ProductCreateDTO dto);
+        Task<ProductDisplayDTO> Update(ProductUpdateDTO dto);
+        Task Delete(Product p);
+        Task<int> UploadProductImageAsync(IFormFile File);
     }
 }

@@ -50,7 +50,7 @@ namespace DataAcess.Repos
                               $"{contextAccessor.HttpContext.Request.PathBase}/Images/{image.FileName}{image.FileExtension}";
 
             image.FilePath = urlFilepath;
-            await db.Image.AddAsync(image);
+            await db.Images.AddAsync(image);
             await db.SaveChangesAsync();
 
             return image;
