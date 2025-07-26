@@ -76,10 +76,11 @@ namespace IdentityManager.Services.ControllerService
 
         }
 
-        public async Task<ProductDisplayDTO> Create(ProductCreateDTO dto)
+        public async Task<ProductDisplayDTO> Create(ProductCreateDTO dto, string sellerId)
         {
             Product p = mapper.Map<Product>(dto);
             p.ImageId = await UploadProductImageAsync(dto.File);
+            p.SellerId = sellerId;
             await productRepo.CreateProductAsync(p);
             await productRepo.SaveAsync();
             return mapper.Map<ProductDisplayDTO>(p);
@@ -93,7 +94,8 @@ namespace IdentityManager.Services.ControllerService
                 return null;
             }
             mapper.Map(dto, existing);
-            existing.ImageId = await UploadProductImageAsync(dto.File);
+            if(dto.File != null)
+                existing.ImageId = await UploadProductImageAsync(dto.File);
             await productRepo.UpdateProductAsync(existing);
             await productRepo.SaveAsync();
             return mapper.Map<ProductDisplayDTO>(existing);
@@ -105,6 +107,11 @@ namespace IdentityManager.Services.ControllerService
             await productRepo.SaveAsync();
 
 
+        }
+
+        public async Task<IEnumerable<ProductDisplayDTO>> GetAllProductsBySeriviceId(int seriviceId)
+        {
+            return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProductsBySeriviceId(seriviceId));
         }
     }
 }

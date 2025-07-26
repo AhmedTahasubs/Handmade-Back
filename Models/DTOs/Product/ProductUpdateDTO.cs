@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Models.DTOs
@@ -18,10 +19,8 @@ namespace Models.DTOs
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public IFormFile File { get; set; } = null!;
-        public string SellerId { get; set; } = null!;
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public IFormFile? File { get; set; }
+        
 
     }
 }
