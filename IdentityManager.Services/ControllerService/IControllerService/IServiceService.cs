@@ -16,6 +16,8 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         ServiceDto Create(CreateServiceDto dto);
         ServiceDto Update(int id ,UpdateServiceDto dto);
         bool Delete(int id);
-        
+        IEnumerable<ServiceDto> GetAllBySellerId(string sellerId);
+        IEnumerable<ServiceDto> GetAllByCategoryId(int categoryId);
+
     }
 }
