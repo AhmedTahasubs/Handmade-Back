@@ -13,8 +13,10 @@ namespace IdentityManager.Services.ControllerService.IControllerService
     public interface IProductService
     {
         Task<IEnumerable<ProductDisplayDTO>> GetAllDisplayDTOs();
+        Task<IEnumerable<ProductDisplayDTO>> GetAllProductsBySeriviceId(int seriviceId);
+
         Task<ProductDisplayDTO> GetById(int id);
-        Task<ProductDisplayDTO> Create(ProductCreateDTO dto);
+        Task<ProductDisplayDTO> Create(ProductCreateDTO dto, string sellerId);
         Task<ProductDisplayDTO> Update(ProductUpdateDTO dto);
         Task Delete(Product p);
         Task<int> UploadProductImageAsync(IFormFile File);

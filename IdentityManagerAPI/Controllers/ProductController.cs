@@ -30,15 +30,20 @@ namespace IdentityManagerAPI.Controllers
             return Ok(await productService.GetAllDisplayDTOs());
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute]int id)
         {
             var product = await productService.GetById(id);
             if (product == null)
                 return NotFound();
             return Ok(product);
         }
+        [HttpGet("get-by-serviceid/{id}")]
+        public async Task<IActionResult>GetByServiceId([FromRoute] int id)
+        {
+            return Ok(await productService.GetAllProductsBySeriviceId(id));
+        }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var product = await repo.GetProductByIdAsync(id);
@@ -53,14 +58,14 @@ namespace IdentityManagerAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] ProductCreateDTO productCreateDTO)
         {
-            var productDTO = await productService.Create(productCreateDTO);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
                 return Unauthorized();
+            var productDTO = await productService.Create(productCreateDTO, userId);
             return CreatedAtAction(nameof(GetById), new { id = productDTO.Id }, productDTO);
         }
             [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id,[FromForm] ProductUpdateDTO productUpdateDTO)
+        public async Task<IActionResult> Put([FromRoute]int id,[FromForm] ProductUpdateDTO productUpdateDTO)
         {
             if (id != productUpdateDTO.Id)
                 return BadRequest("ID mismatch between route and payload.");
@@ -74,15 +79,12 @@ namespace IdentityManagerAPI.Controllers
 
             if (userId == null)
                 return Unauthorized();
-            Console.WriteLine($"userId: {userId}");
-            Console.WriteLine($"SellerId: {existingProduct.SellerId}");
 
             if (!isAdmin && userId != existingProduct.SellerId)
                 return Forbid();
-
             ProductDisplayDTO productDisplayDTO = await productService.Update(productUpdateDTO);
 
-            return CreatedAtAction("GetById", new { id = productDisplayDTO.Id}, productDisplayDTO);
+            return Ok(productDisplayDTO);
         }
     }
 }
