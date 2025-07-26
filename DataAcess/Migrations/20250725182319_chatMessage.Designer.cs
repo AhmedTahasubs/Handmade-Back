@@ -4,6 +4,7 @@ using DataAcess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAcess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250725182319_chatMessage")]
+    partial class chatMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,9 +246,6 @@ namespace DataAcess.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -263,8 +263,6 @@ namespace DataAcess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("LastUpdatedById");
 
@@ -620,7 +618,7 @@ namespace DataAcess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("HasWhatsApp")
+                    b.Property<bool?>("HasWhatsApp")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ImageId")
@@ -704,17 +702,11 @@ namespace DataAcess.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("Models.Domain.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("Models.Domain.ApplicationUser", "LastUpdatedBy")
                         .WithMany()
                         .HasForeignKey("LastUpdatedById");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("Image");
 
                     b.Navigation("LastUpdatedBy");
                 });

@@ -1,21 +1,23 @@
 using DataAcess;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
-using Models.DTOs.Mapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
 using DataAcess.Repos;
 using DataAcess.Repos.IRepos;
-using Models.Domain;
-using Microsoft.Extensions.FileProviders;
-using IdentityManagerAPI.Middlewares;
-using IdentityManager.Services.ControllerService.IControllerService;
-using IdentityManager.Services.ControllerService;
 using DataAcess.Seeds;
+using IdentityManager.Services.ControllerService;
+using IdentityManager.Services.ControllerService.IControllerService;
+using IdentityManagerAPI;
+using IdentityManagerAPI.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Models.Domain;
+using Models.DTOs.Mapper;
+using Scalar.AspNetCore;
+using StackExchange.Redis;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,10 @@ builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceReviewRepository, ServiceReviewRepository>();
 builder.Services.AddScoped<IServiceReviewService, ServiceReviewService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
+builder.Services.AddSignalR().AddStackExchangeRedis("localhost:6379");
+
 
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -94,8 +100,20 @@ builder.Services.AddAuthentication(options =>
 // Register the global exception handler
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .SetIsOriginAllowed(_ => true)
+              .AllowCredentials();
+    });
+});
+
 
 var app = builder.Build();
+app.MapHub<ChatHub>("/chat");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -107,8 +125,8 @@ if (app.Environment.IsDevelopment())
 // Use the global exception handler
 app.UseExceptionHandler();
 
-
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication(); 
 app.UseAuthorization();
 

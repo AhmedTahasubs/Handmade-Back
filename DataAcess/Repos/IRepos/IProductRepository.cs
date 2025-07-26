@@ -17,5 +17,6 @@ namespace DataAcess.Repos.IRepos
         Task CreateProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Product p);
+        Task<int> SaveAsync();
     }
 }

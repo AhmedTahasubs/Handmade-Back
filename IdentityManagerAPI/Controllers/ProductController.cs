@@ -17,64 +17,55 @@ namespace IdentityManagerAPI.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService productService;
-        private readonly IMapper mapper;
-        private readonly IProductRepository ProductRepo;
+        private readonly IProductRepository repo;
 
-        public ProductController(IMapper _mapper, IProductRepository _productRepository, IProductService _productService)
+        public ProductController(IProductService _productService, IProductRepository _repo)
         {
-            mapper = _mapper;
-            ProductRepo = _productRepository;
             productService = _productService;
+            repo = _repo;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var products = await ProductRepo.GetAllProducts();
-            return Ok(mapper.Map<List<ProductDisplayDTO>>(products));
+            return Ok(await productService.GetAllDisplayDTOs());
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var product = await ProductRepo.GetProductByIdAsync(id);
+            var product = await productService.GetById(id);
             if (product == null)
                 return NotFound();
-            return Ok(mapper.Map<ProductDisplayDTO>(product));
+            return Ok(product);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var product = await ProductRepo.GetProductByIdAsync(id);
+            var product = await repo.GetProductByIdAsync(id);
             if (product == null)
                 return NotFound();
             var isAdmin = User.IsInRole(AppRoles.Admin);
-            if (!isAdmin && product.SellerId != userId)
-                return Forbid();
-            await ProductRepo.DeleteProductAsync(product);
+            if (!isAdmin && product.SellerId.ToString() != userId)
+                return Forbid("You are not allowed to delete this product.");
+            await productService.Delete(product);
             return NoContent();
         }
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ProductCreateDTO productCreateDTO)
+        public async Task<IActionResult> Post([FromForm] ProductCreateDTO productCreateDTO)
         {
-            var product = mapper.Map<Product>(productCreateDTO);
-            var imageId = await productService.UploadProductImageAsync(productCreateDTO.ImageUploadRequest);
-            product.ImageId = imageId;
+            var productDTO = await productService.Create(productCreateDTO);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
                 return Unauthorized();
-            product.SellerId = userId;
-            product.Status = ProductStatus.Pending;
-            await ProductRepo.CreateProductAsync(product);
-            var displayDto = mapper.Map<ProductDisplayDTO>(product);
-            return CreatedAtAction(nameof(GetById), new { id = product.Id }, displayDto);
+            return CreatedAtAction(nameof(GetById), new { id = productDTO.Id }, productDTO);
         }
             [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id,[FromBody] ProductUpdateDTO productUpdateDTO)
+        public async Task<IActionResult> Put(int id,[FromForm] ProductUpdateDTO productUpdateDTO)
         {
             if (id != productUpdateDTO.Id)
                 return BadRequest("ID mismatch between route and payload.");
 
-            var existingProduct = await ProductRepo.GetProductByIdAsync(id);
+            var existingProduct = await productService.GetById(id);
             if (existingProduct == null)
                 return NotFound();
 
@@ -83,25 +74,15 @@ namespace IdentityManagerAPI.Controllers
 
             if (userId == null)
                 return Unauthorized();
+            Console.WriteLine($"userId: {userId}");
+            Console.WriteLine($"SellerId: {existingProduct.SellerId}");
 
             if (!isAdmin && userId != existingProduct.SellerId)
                 return Forbid();
 
-            // Map updates onto the existing product entity
-            mapper.Map(productUpdateDTO, existingProduct);
+            ProductDisplayDTO productDisplayDTO = await productService.Update(productUpdateDTO);
 
-            // Optional image update
-            if (productUpdateDTO.ImageUploadRequest != null)
-            {
-                var imageId = await productService.UploadProductImageAsync(productUpdateDTO.ImageUploadRequest);
-                existingProduct.ImageId = imageId;
-            }
-
-            existingProduct.SellerId = userId;
-
-            await ProductRepo.UpdateProductAsync(existingProduct);
-
-            return NoContent();
+            return CreatedAtAction("GetById", new { id = productDisplayDTO.Id}, productDisplayDTO);
         }
     }
 }

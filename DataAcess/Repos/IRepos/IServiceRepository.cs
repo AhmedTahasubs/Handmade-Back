@@ -17,5 +17,7 @@ namespace DataAcess.Repos.IRepos
         Service UPDATE(Service service);
         bool Delete(int id);
         void SavaChange();
+        IEnumerable<Service> GetAllBySellerId(string sellerId);
+        IEnumerable<Service> GetAllByCategoryId(int categoryId);
     }
 }

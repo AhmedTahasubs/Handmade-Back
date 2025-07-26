@@ -22,6 +22,12 @@ namespace DataAcess.Repos
             this.webHostEnvironment = webHostEnvironment;
             this.contextAccessor = contextAccessor;
         }
+        public string GetImageUrl(int imageId)
+        {
+            var image = db.Images.FirstOrDefault(i => i.Id == imageId);
+            return image?.FilePath ?? string.Empty;
+        }
+
 
         public async Task<Image> Upload(Image image)
         {
@@ -50,7 +56,7 @@ namespace DataAcess.Repos
                               $"{contextAccessor.HttpContext.Request.PathBase}/Images/{image.FileName}{image.FileExtension}";
 
             image.FilePath = urlFilepath;
-            await db.Image.AddAsync(image);
+            await db.Images.AddAsync(image);
             await db.SaveChangesAsync();
 
             return image;

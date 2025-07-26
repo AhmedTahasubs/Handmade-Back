@@ -22,19 +22,18 @@ namespace Models.Domain
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Foreign Keys
-        [ForeignKey("User")]
         public string SellerId { get; set; } = null!;
 
-        [ForeignKey("Service")]
         public int ServiceId { get; set; }
 
-        [ForeignKey("Image")]
         public int ImageId { get; set; }
 
         // Navigation Properties
+        [ForeignKey("SellerId")]
         public ApplicationUser User { get; set; } = null!;
-        public Service? Servcie { get; set; }
+        [ForeignKey("ServiceId")]
+        public Service? Service { get; set; }
+        [ForeignKey("ImageId")]
         public Image? Image { get; set; }
-        public IEnumerable<Review> Reviews { get; set; } = new List<Review>();
     }
 }

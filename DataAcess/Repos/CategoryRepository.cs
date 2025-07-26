@@ -46,6 +46,12 @@ namespace DataAcess.Repos
             await _db.SaveChangesAsync();
             return true;
         }
+
+        public IEnumerable<Category> SearchByName(string name)
+        {
+            var searched = _db.Categories.Where(c=>c.Name.Contains(name)).ToList();
+            return searched;
+        }
     }
 
 

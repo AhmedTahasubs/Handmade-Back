@@ -17,13 +17,8 @@ namespace Models.DTOs
         public int Quantity { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [ForeignKey("User")]
         public string SellerId { get; set; } = null!;
-        [ForeignKey("Service")]
         public int ServiceId { get; set; }
-        [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public Image? Image { get; set; }
-        public IEnumerable<Review> Reviews { get; set; }
+        public string? ImageUrl {  get; set; }
     }
 }

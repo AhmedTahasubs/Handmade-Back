@@ -7,6 +7,7 @@ using Models.DTOs.OrderDTO;
 using Models.DTOs.OrderItemDTO;
 using System;
 using Models.DTOs.Categories;
+using Models.Const;
 //using Models.DTOs.Category;
 
 namespace Models.DTOs.Mapper
@@ -20,10 +21,25 @@ namespace Models.DTOs.Mapper
 
 			//Category
 			CreateMap<CreateCategoryDto, Category>().ReverseMap();
-			// Product
-			CreateMap<Product, ProductDisplayDTO>();
-            CreateMap<ProductUpdateDTO, Product>();
-            CreateMap<ProductCreateDTO, Product>();
+            // Product
+            // ProductDisplayDTO <-> Product
+            CreateMap<Product, ProductDisplayDTO>()
+                .AfterMap((src, dest) => dest.ImageUrl = src?.Image?.FilePath);
+            CreateMap<ProductDisplayDTO, Product>(); 
+
+
+            // ProductUpdateDTO <-> Product
+            CreateMap<ProductUpdateDTO, Product>()
+                .AfterMap((src, dest) => dest.Status = ProductStatus.Pending);
+
+            CreateMap<Product, ProductUpdateDTO>();
+
+
+            // ProductCreateDTO -> Product
+            CreateMap<ProductCreateDTO, Product>()
+                .AfterMap((src, dest) => dest.Status = ProductStatus.Pending);
+
+            ;
 
             // Order
             CreateMap<Order, OrderReadDto>();

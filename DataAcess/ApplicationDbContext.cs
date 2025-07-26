@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Models.Domain;
+using System.Reflection.Emit;
 
 namespace DataAcess
 {
@@ -12,7 +13,7 @@ namespace DataAcess
         }
 
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        public DbSet<Image> Image { get; set; }
+        public DbSet<Image> Images { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -21,6 +22,7 @@ namespace DataAcess
         public DbSet<Category> Categories { get; set; }
         
         public DbSet<ServiceReview> ServiceReviews { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -62,6 +64,17 @@ namespace DataAcess
                 .HasOne(r => r.Reviewer)
                 .WithMany(u => u.ServiceReviews)
                 .HasForeignKey(r => r.ReviewerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<ChatMessage>()
+            .HasOne(m => m.Sender)
+            .WithMany()
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict); // don't auto-delete
+
+            builder.Entity<ChatMessage>()
+                .HasOne(m => m.Receiver)
+                .WithMany()
+                .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
         }

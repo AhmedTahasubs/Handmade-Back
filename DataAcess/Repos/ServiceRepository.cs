@@ -57,5 +57,25 @@ namespace DataAcess.Repos
         {
             db.SaveChanges();
         }
+
+        public IEnumerable<Service> GetAllBySellerId(string sellerId)
+        {
+            return db.Services
+                .Include(s => s.Seller)
+                .Include(c => c.Category)
+                .Include(s => s.Reviews)
+                .Where(s => s.SellerId == sellerId)
+                .ToList();
+        }
+
+        public IEnumerable<Service> GetAllByCategoryId(int categoryId)
+        {
+            return db.Services
+                .Include(s => s.Seller)
+                .Include(c => c.Category)
+                .Include(s => s.Reviews)
+                .Where(s => s.CategoryId == categoryId)
+                .ToList();
+        }
     }
 }
