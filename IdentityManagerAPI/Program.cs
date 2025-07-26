@@ -54,6 +54,7 @@ builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceReviewRepository, ServiceReviewRepository>();
 builder.Services.AddScoped<IServiceReviewService, ServiceReviewService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 builder.Services.AddSignalR().AddStackExchangeRedis("localhost:6379");
 

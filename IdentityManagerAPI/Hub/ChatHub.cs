@@ -1,4 +1,5 @@
 ﻿using DataAcess;
+using DataAcess.Repos.IRepos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Models.Domain;
@@ -10,12 +11,12 @@ namespace IdentityManagerAPI
     public class ChatHub : Hub
     {
         private readonly IConnectionMultiplexer redis;
-        private readonly ApplicationDbContext DB;
+        private readonly IChatRepository chatRepo;
 
-        public ChatHub(IConnectionMultiplexer _redis, ApplicationDbContext _db)
+        public ChatHub(IConnectionMultiplexer _redis, IChatRepository _chatRepo)
         {
             redis = _redis;
-            DB = _db;
+            chatRepo = _chatRepo;
         }
         public override async Task OnConnectedAsync()
         {
@@ -44,16 +45,7 @@ namespace IdentityManagerAPI
                 return;
             var db = redis.GetDatabase();
             var connectionId = await db.StringGetAsync($"chat:user:{toUserId}:conn");
-            var chatMessage = new ChatMessage
-            {
-                SenderId = senderId,
-                ReceiverId = toUserId,
-                Content = messageContent,
-                SentAt = DateTime.UtcNow,
-                IsDelivered = !connectionId.IsNullOrEmpty
-            };
-            DB.ChatMessages.Add(chatMessage);
-            await DB.SaveChangesAsync();
+            var chatMessage = await chatRepo.SaveMessageAsync(messageContent, senderId, toUserId, !connectionId.IsNullOrEmpty);
             if(!connectionId.IsNullOrEmpty)
                 await Clients.Client(connectionId!).SendAsync("ReceiveMessage", senderId, messageContent, chatMessage.SentAt);
         }
