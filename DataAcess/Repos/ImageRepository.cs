@@ -22,6 +22,12 @@ namespace DataAcess.Repos
             this.webHostEnvironment = webHostEnvironment;
             this.contextAccessor = contextAccessor;
         }
+        public string GetImageUrl(int imageId)
+        {
+            var image = db.Images.FirstOrDefault(i => i.Id == imageId);
+            return image?.FilePath ?? string.Empty;
+        }
+
 
         public async Task<Image> Upload(Image image)
         {
