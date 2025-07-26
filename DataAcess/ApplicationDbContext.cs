@@ -23,6 +23,8 @@ namespace DataAcess
         
         public DbSet<ServiceReview> ServiceReviews { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
