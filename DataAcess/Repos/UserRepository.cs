@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Models.Domain;
+using Models.Const;
 
 
 namespace DataAcess.Repos
@@ -85,7 +86,7 @@ namespace DataAcess.Repos
             };
         }
 
-        public async Task<UserDTO> Register(RegisterRequestDTO registerRequestDTO)
+        public async Task<UserDTO> RegisterAdmin(RegisterRequestDTO registerRequestDTO)
         {
             var user = new ApplicationUser
             {
@@ -102,19 +103,7 @@ namespace DataAcess.Repos
                 var result = await userManager.CreateAsync(user, registerRequestDTO.Password);
                 if (result.Succeeded)
                 {
-
-                    if (registerRequestDTO.Roles != null && registerRequestDTO.Roles.Any()) // any() is a LINQ method that returns true if there are any elements in the collection
-                    {
-                        foreach (var role in registerRequestDTO.Roles)
-                        {
-                            if (!await roleManager.RoleExistsAsync(role))
-                            {
-                                await roleManager.CreateAsync(new IdentityRole(role));
-                            }
-                            await userManager.AddToRoleAsync(user, role);
-                        }   
-                    }
-
+                    await userManager.AddToRoleAsync(user,AppRoles.Admin);
                     userDTO = mapper.Map<UserDTO>(user);
                 }
                 else
@@ -129,6 +118,78 @@ namespace DataAcess.Repos
 
             return userDTO;
         }
+
+		public async Task<UserDTO> RegisterCustomer(CustomerRegisterDto customerRegisterDto)
+		{
+			var user = new ApplicationUser
+			{
+				UserName = customerRegisterDto.UserName,
+				FullName = customerRegisterDto.Name,
+				Email = customerRegisterDto.Email,
+				NormalizedEmail = customerRegisterDto.Email.ToUpper(),
+				HasWhatsApp = customerRegisterDto.HasWhatsApp,
+				Address = customerRegisterDto.Address,
+			};
+
+			var userDTO = new UserDTO();
+
+			try
+			{
+				var result = await userManager.CreateAsync(user, customerRegisterDto.Password);
+				if (result.Succeeded)
+				{
+					await userManager.AddToRoleAsync(user, AppRoles.Customer);
+					userDTO = mapper.Map<UserDTO>(user);
+				}
+				else
+				{
+					userDTO.ErrorMessages = result.Errors.Select(e => e.Description).ToList();
+				}
+			}
+			catch (Exception)
+			{
+				userDTO.ErrorMessages = new List<string> { "An unexpected error occurred while registering the user." };
+			}
+
+			return userDTO;
+		}
+
+		public async Task<UserDTO> RegisterSeller(SellerRegisterDto sellerRegisterDto)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = sellerRegisterDto.UserName,
+                FullName = sellerRegisterDto.Name,
+                Email = sellerRegisterDto.Email,
+                NormalizedEmail = sellerRegisterDto.Email.ToUpper(),
+                NationalId = sellerRegisterDto.NationalId,
+                Bio = sellerRegisterDto.Bio,
+            };
+
+            var userDTO = new UserDTO();
+
+            try
+            {
+                var result = await userManager.CreateAsync(user, sellerRegisterDto.Password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user,AppRoles.Seller);
+                    userDTO = mapper.Map<UserDTO>(user);
+                }
+                else
+                {
+                    userDTO.ErrorMessages = result.Errors.Select(e => e.Description).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                userDTO.ErrorMessages = new List<string> { "An unexpected error occurred while registering the user." };
+            }
+
+            return userDTO;
+        }
+
+
 
         public async Task<bool> UpdateAsync(ApplicationUser user)
         {

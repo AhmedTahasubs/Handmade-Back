@@ -13,7 +13,9 @@ namespace DataAcess.Repos.IRepos
     {
         Task<bool> IsUniqueUserName(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
-        Task<UserDTO> Register(RegisterRequestDTO registerRequestDTO);
+        Task<UserDTO> RegisterAdmin(RegisterRequestDTO registerRequestDTO);
+        Task<UserDTO> RegisterSeller(SellerRegisterDto sellerRegisterDto);
+        Task<UserDTO> RegisterCustomer(CustomerRegisterDto customerRegisterDto);
         Task<ApplicationUser> GetUserByID(string userID);
         Task<bool> UpdateAsync(ApplicationUser user);
 

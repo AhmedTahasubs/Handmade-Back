@@ -26,10 +26,25 @@ namespace IdentityManagerAPI.Controllers
             var result = await _authService.LoginAsync(loginRequestDTO);
             return Ok(result);
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerRequestDTO)
         {
-            var result = await _authService.RegisterAsync(registerRequestDTO);
+            var result = await _authService.RegisterAdminAsync(registerRequestDTO);
+            return Ok(result);
+        }
+
+        [HttpPost("register/seller")]
+        public async Task<IActionResult> RegisterSeller([FromBody] SellerRegisterDto sellerRegisterDto)
+        {
+            var result = await _authService.RegisterSellerAsync(sellerRegisterDto);
+            return Ok(result);
+        }
+
+        [HttpPost("register/customer")]
+        public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegisterDto customerRegisterDto)
+        {
+            var result = await _authService.RegisterCustomerAsync(customerRegisterDto);
             return Ok(result);
         }
     }

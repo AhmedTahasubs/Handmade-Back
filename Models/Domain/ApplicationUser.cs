@@ -26,7 +26,7 @@ namespace Models.Domain
 		[MaxLength(20)]
 		public string? NationalId { get; set; } 
 
-		public bool? HasWhatsApp { get; set; }
+		public bool HasWhatsApp { get; set; } = false;
 
 		[MaxLength(500)]
 		public string? Address { get; set; } 
