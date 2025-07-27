@@ -65,5 +65,11 @@ namespace IdentityManagerAPI.Controllers
             await _orderRepo.SaveChangesAsync();
             return NoContent();
         }
+        public async Task<ActionResult> GetByBuyerId(string id)
+        {
+            var order = await _orderRepo.GetByBuyerIdAsync(id);
+            if (order == null) return NotFound();
+            return Ok(_mapper.Map<OrderReadDto>(order));
+        }
     }
 }
