@@ -40,6 +40,13 @@ namespace DataAcess
                 .WithMany(c => c.Services)
                 .HasForeignKey(s => s.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Product>()
+               .HasOne(s => s.Service)
+               .WithMany(c => c.Products)
+               .HasForeignKey(s => s.ServiceId)
+               .OnDelete(DeleteBehavior.Cascade);
+
             // ✅ Service → Seller (User)
             builder.Entity<Service>()
                 .HasOne(s => s.Seller)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.DTOs.Categories
 {
-    public class CategoryDto
+    public class CategoryDto // get
     {
         public int Id { get; set; }
         public string Name { get; set; }

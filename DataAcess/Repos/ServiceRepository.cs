@@ -35,7 +35,9 @@ namespace DataAcess.Repos
         {
             return db.Services.Include(s => s.Seller)
                 .Include(c => c.Category)
-                .Include(s => s.Reviews).FirstOrDefault(s => s.Id == id);
+                .Include(s => s.Reviews)
+                .Include(s => s.Products)
+                .FirstOrDefault(s => s.Id == id);
 
         }
 

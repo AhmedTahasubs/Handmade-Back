@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,6 @@ namespace Models.DTOs.Service
         public int DeliveryTime { get; set; }
         public string Status { get; set; }
         public int CategoryId { get; set; }
-        public int? ImageId { get; set; }
+        public IFormFile? File { get; set; }
     }
 }
