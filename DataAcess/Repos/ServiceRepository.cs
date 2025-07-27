@@ -37,6 +37,7 @@ namespace DataAcess.Repos
                 .Include(c => c.Category)
                 .Include(s => s.Reviews)
                 .Include(s => s.Products)
+               .ThenInclude(p=>p.Image)
                 .FirstOrDefault(s => s.Id == id);
 
         }

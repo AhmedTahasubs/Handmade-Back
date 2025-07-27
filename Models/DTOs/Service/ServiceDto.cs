@@ -21,6 +21,6 @@ namespace Models.DTOs.Service
         public string SellerId { get; set; }
         public int CategoryId { get; set; }
         public string? ImageUrl { get; set; }
-        public IEnumerable<Product> Products { get; set; } = new List<Product>();
+       public List<ProductDisplayDTO> Products { get; set; }
     }
 }

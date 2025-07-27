@@ -1,8 +1,10 @@
-﻿using DataAcess.Repos;
+﻿using AutoMapper;
+using DataAcess.Repos;
 using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
 using Microsoft.AspNetCore.Http;
 using Models.Domain;
+using Models.DTOs;
 using Models.DTOs.Service;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +17,14 @@ namespace IdentityManager.Services.ControllerService
         private readonly IServiceRepository _repo;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ImageRepository _imageRepo;
+        private readonly IMapper _mapper;
 
-        public ServiceService(IServiceRepository repo, IHttpContextAccessor httpContextAccessor, ImageRepository imageRepo)
+        public ServiceService(IServiceRepository repo, IHttpContextAccessor httpContextAccessor, ImageRepository imageRepo , IMapper mapper)
         {
             _repo = repo;
             _httpContextAccessor = httpContextAccessor;
             _imageRepo = imageRepo;
+            _mapper = mapper;
         }
 
         private string? GetCurrentUserId()
@@ -42,7 +46,7 @@ namespace IdentityManager.Services.ControllerService
             AvgRating = s.Reviews?.Any() == true ? s.Reviews.Average(r => r.Rating) : 0,
             SellerId = s.SellerId,
             CategoryId = s.CategoryId,
-            Products = s.Products ?? new List<Product>(), // لو مفيش منتجات يبقى قائمة فاضية
+            Products = _mapper.Map<List<ProductDisplayDTO>>(s.Products), // لو مفيش منتجات يبقى قائمة فاضية
             ImageUrl = s.ImageId.HasValue ? _imageRepo.GetImageUrl(s.ImageId.Value) : null
         };
 
