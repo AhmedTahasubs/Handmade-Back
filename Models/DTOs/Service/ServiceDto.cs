@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Models.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,7 @@ namespace Models.DTOs.Service
         public double AvgRating { get; set; }
         public string SellerId { get; set; }
         public int CategoryId { get; set; }
-        public int? ImageId { get; set; }
+        public string? ImageUrl { get; set; }
+       public List<ProductDisplayDTO> Products { get; set; }
     }
 }

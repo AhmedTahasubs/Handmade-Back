@@ -1,14 +1,18 @@
-﻿namespace Models.Domain
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Models.Domain
 {
     public class Service
     {
         public int Id { get; set; }
 
-        // البائع صاحب الخدمة
+        [ForeignKey("Seller")]        
+    
+        
         public string SellerId { get; set; }
         public ApplicationUser Seller { get; set; }
 
-        // التصنيف
+        [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
@@ -20,8 +24,8 @@
         public string Status { get; set; } = "active"; // active - paused - awiting
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // لو هنضيف مستقبلاً منتجات مرتبطة بالخدمة
-        // public ICollection<Product> Products { get; set; }
+        
+         public ICollection<Product> Products { get; set; }
 
         // التقييمات
         public ICollection<ServiceReview> Reviews { get; set; }
