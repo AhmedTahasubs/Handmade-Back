@@ -12,5 +12,6 @@ namespace DataAcess.Repos.IRepos
         Task<Order> GetByIdAsync(int id);
         void Update(Order order);
         Task<bool> SaveChangesAsync();
+        Task<Order> GetByBuyerIdAsync(string id);
     }
 }

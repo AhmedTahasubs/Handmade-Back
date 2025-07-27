@@ -25,6 +25,10 @@ namespace DataAcess.Repos
         {
             _context.Orders.Update(order);
         }
+        public async Task<Order> GetByBuyerIdAsync(string id)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(o => o.BuyerId == id);
+        }
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0;
