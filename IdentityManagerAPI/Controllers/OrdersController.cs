@@ -28,7 +28,7 @@ namespace IdentityManagerAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<OrderReadDto>>(orders));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<OrderReadDto>> GetById(int id)
         {
             var order = await _orderRepo.GetByIdAsync(id);
@@ -65,9 +65,10 @@ namespace IdentityManagerAPI.Controllers
             await _orderRepo.SaveChangesAsync();
             return NoContent();
         }
-        public async Task<ActionResult> GetByBuyerId(string id)
+        [HttpGet("buyer/{buyerid}")]
+        public async Task<ActionResult> GetByBuyerId(string buyerid)
         {
-            var order = await _orderRepo.GetByBuyerIdAsync(id);
+            var order = await _orderRepo.GetByBuyerIdAsync(buyerid);
             if (order == null) return NotFound();
             return Ok(_mapper.Map<OrderReadDto>(order));
         }
