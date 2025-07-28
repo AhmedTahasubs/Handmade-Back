@@ -1,11 +1,12 @@
-﻿namespace Models.DTOs.OrderDTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Models.DTOs.OrderDTO
 {
     public class OrderReadDto
     {
+        [Key]
         public int Id { get; set; }
         public string BuyerId { get; set; }
-        public string SellerId { get; set; }
-        public int? ServiceId { get; set; }
         public string ShippingAddress { get; set; }
         public string OrderStatus { get; set; }
         public string PaymentStatus { get; set; }
