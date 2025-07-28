@@ -19,5 +19,6 @@ namespace DataAcess.Repos.IRepos
         void SavaChange();
         IEnumerable<Service> GetAllBySellerId(string sellerId);
         IEnumerable<Service> GetAllByCategoryId(int categoryId);
+        IEnumerable<Service> GetAllByCategoryName(string categoryName);
     }
 }

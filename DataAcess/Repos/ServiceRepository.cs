@@ -80,5 +80,15 @@ namespace DataAcess.Repos
                 .Where(s => s.CategoryId == categoryId)
                 .ToList();
         }
+
+        public IEnumerable<Service> GetAllByCategoryName(string categoryName)
+        {
+            return db.Services
+                .Include(s => s.Seller)
+                .Include(c => c.Category)
+                .Include(s => s.Reviews)
+                .Where(s => s.Category.Name == categoryName)
+                .ToList();
+        }
     }
 }
