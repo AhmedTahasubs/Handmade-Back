@@ -186,5 +186,10 @@ namespace IdentityManager.Services.ControllerService
             return services.Select(ToDto);
         }
 
+        public IEnumerable<ServiceDto> GetAllByCategoryName(string categoryName)
+        {
+            var services = _repo.GetAllByCategoryName(categoryName);
+            return services.Select(ToDto);
+        }
     }
 }

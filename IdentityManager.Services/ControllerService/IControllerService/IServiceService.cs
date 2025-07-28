@@ -19,6 +19,7 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         IEnumerable<ServiceDto> GetAllBySellerId(string sellerId);
         IEnumerable<ServiceDto> GetAllByCategoryId(int categoryId);
         IEnumerable<ServiceDto> GetMyServices();
+        IEnumerable<ServiceDto> GetAllByCategoryName(string categoryName);
 
 
     }
