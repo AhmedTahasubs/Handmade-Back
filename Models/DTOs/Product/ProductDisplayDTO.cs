@@ -20,5 +20,6 @@ namespace Models.DTOs
         public string SellerId { get; set; } = null!;
         public int ServiceId { get; set; }
         public string? ImageUrl {  get; set; }
-    }
+        public string Category {  get; set; } = null!;
+	}
 }
