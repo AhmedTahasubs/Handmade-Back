@@ -14,6 +14,7 @@ namespace IdentityManager.Services.ControllerService.IControllerService
     {
         Task<IEnumerable<ProductDisplayDTO>> GetAllDisplayDTOs();
         Task<IEnumerable<ProductDisplayDTO>> GetAllProductsBySeriviceId(int seriviceId);
+        Task<IEnumerable<ProductDisplayDTO>> GetAllProductsBySellerId(string sellerId);
 
         Task<ProductDisplayDTO> GetById(int id);
         Task<ProductDisplayDTO> Create(ProductCreateDTO dto, string sellerId);

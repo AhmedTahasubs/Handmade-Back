@@ -123,7 +123,7 @@ namespace IdentityManager.Services.ControllerService
             existing.Description = dto.Description;
             existing.BasePrice = dto.BasePrice;
             existing.DeliveryTime = dto.DeliveryTime;
-            existing.Status = dto.Status ?? existing.Status;
+            //existing.Status = dto.Status ?? existing.Status;
             existing.CategoryId = dto.CategoryId;
 
             var updated = _repo.UPDATE(existing);

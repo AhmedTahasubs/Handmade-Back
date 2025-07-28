@@ -32,9 +32,13 @@ namespace DataAcess.Repos
 
         public async Task<List<Product>> GetAllProductsBySeriviceId(int seriviceId)
         {
-            return await db.Products.Include(p => p.Image).Where(p => p.ServiceId == seriviceId).ToListAsync();
+            return await db.Products.Include(p => p.Image).Include(p=> p.Service).Where(p => p.ServiceId == seriviceId).ToListAsync();
         }
-        public async Task<List<Product>> GetAllProducts()
+		public async Task<List<Product>> GetAllProductsBySellerId(string SellerId)
+		{
+			return await db.Products.Include(p => p.Image).Include(p => p.Service).Where(p => p.SellerId == SellerId).ToListAsync();
+		}
+		public async Task<List<Product>> GetAllProducts()
         {
             return await db.Products.Include(p => p.Image).ToListAsync();
         }

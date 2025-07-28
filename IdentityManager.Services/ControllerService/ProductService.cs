@@ -113,5 +113,9 @@ namespace IdentityManager.Services.ControllerService
         {
             return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProductsBySeriviceId(seriviceId));
         }
+        public async Task<IEnumerable<ProductDisplayDTO>> GetAllProductsBySellerId(string sellerId)
+        {
+            return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProductsBySellerId(sellerId));
+        }
     }
 }

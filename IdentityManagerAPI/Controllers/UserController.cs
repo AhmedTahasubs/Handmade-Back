@@ -1,11 +1,14 @@
-﻿using DataAcess.Repos.IRepos;
+﻿using DataAcess;
+using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Validations;
 using Models.Domain;
 using Models.DTOs.image;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace IdentityManagerAPI.Controllers
 {
@@ -15,13 +18,15 @@ namespace IdentityManagerAPI.Controllers
     {
 
         private readonly IUserService userService;
+        private readonly ApplicationDbContext _context;
 
-        public UserController(IUserService userService)
-        {
-            this.userService = userService;
-        }
+		public UserController(IUserService userService, ApplicationDbContext context)
+		{
+			this.userService = userService;
+			_context = context;
+		}
 
-        public IUserRepository UserRepo { get; }
+		public IUserRepository UserRepo { get; }
 
         [HttpPost]
         [Authorize]
@@ -31,6 +36,12 @@ namespace IdentityManagerAPI.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await userService.UploadUserImageAsync(userId, request);
             return Ok(result);
+        }
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetUser([FromRoute]string id)
+        {
+            var user = await userService.GetById(id);
+            return Ok(user);
         }
 
     }
