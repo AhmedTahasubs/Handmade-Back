@@ -43,12 +43,22 @@ namespace IdentityManagerAPI
             var senderId = Context.UserIdentifier;
             if (senderId == null || string.IsNullOrEmpty(messageContent))
                 return;
+
             var db = redis.GetDatabase();
             var connectionId = await db.StringGetAsync($"chat:user:{toUserId}:conn");
+
             var chatMessage = await chatRepo.SaveMessageAsync(messageContent, senderId, toUserId, !connectionId.IsNullOrEmpty);
-            if(!connectionId.IsNullOrEmpty)
-                await Clients.Client(connectionId!).SendAsync("ReceiveMessage", senderId, messageContent, chatMessage.SentAt);
+
+            // Send to recipient if online
+            if (!connectionId.IsNullOrEmpty)
+            {
+                await Clients.Client(connectionId!).SendAsync("ReceiveMessage", chatMessage);
+            }
+
+            // Always send to sender
+            await Clients.User(senderId).SendAsync("ReceiveMessage", chatMessage);
         }
+
     }
-    
+
 }
