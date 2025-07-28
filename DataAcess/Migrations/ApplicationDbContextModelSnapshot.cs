@@ -248,7 +248,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.CartItem", b =>
@@ -277,7 +277,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.Category", b =>
@@ -319,7 +319,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("LastUpdatedById");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.ChatMessage", b =>
@@ -354,7 +354,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.CustomRequest", b =>
@@ -400,7 +400,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("CustomRequests");
+                    b.ToTable("CustomRequests", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.Image", b =>
@@ -428,7 +428,7 @@ namespace DataAcess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.Order", b =>
@@ -497,7 +497,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.Product", b =>
@@ -551,7 +551,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.Service", b =>
@@ -601,7 +601,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.ServiceReview", b =>
@@ -635,7 +635,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("ServiceReviews");
+                    b.ToTable("ServiceReviews", (string)null);
                 });
 
             modelBuilder.Entity("Models.Domain.ApplicationUser", b =>

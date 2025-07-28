@@ -1,7 +1,10 @@
-﻿using DataAcess.Repos.IRepos;
+﻿using AutoMapper;
+using DataAcess.Repos;
+using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
 using Microsoft.AspNetCore.Http;
 using Models.Domain;
+using Models.DTOs;
 using Models.DTOs.Service;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +14,17 @@ namespace IdentityManager.Services.ControllerService
 {
     public class ServiceService : IServiceService
     {
-        private readonly IServiceRepository repo;
+        private readonly IServiceRepository _repo;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ImageRepository _imageRepo;
+        private readonly IMapper _mapper;
 
-        public ServiceService(IServiceRepository repo, IHttpContextAccessor httpContextAccessor)
+        public ServiceService(IServiceRepository repo, IHttpContextAccessor httpContextAccessor, ImageRepository imageRepo , IMapper mapper)
         {
-            this.repo = repo;
+            _repo = repo;
             _httpContextAccessor = httpContextAccessor;
+            _imageRepo = imageRepo;
+            _mapper = mapper;
         }
 
         private string? GetCurrentUserId()
@@ -25,8 +32,8 @@ namespace IdentityManager.Services.ControllerService
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
-        // ✅ تحويل Entity → DTO
-        private static ServiceDto ToDto(Service s) => new ServiceDto
+        // ✅ تحويل Entity → DTO مع ImageUrl
+        private ServiceDto ToDto(Service s) => new ServiceDto
         {
             Id = s.Id,
             Title = s.Name,
@@ -39,7 +46,8 @@ namespace IdentityManager.Services.ControllerService
             AvgRating = s.Reviews?.Any() == true ? s.Reviews.Average(r => r.Rating) : 0,
             SellerId = s.SellerId,
             CategoryId = s.CategoryId,
-            ImageId = s.ImageId
+            Products = _mapper.Map<List<ProductDisplayDTO>>(s.Products), // لو مفيش منتجات يبقى قائمة فاضية
+            ImageUrl = s.ImageId.HasValue ? _imageRepo.GetImageUrl(s.ImageId.Value) : null
         };
 
         // ✅ إنشاء خدمة جديدة
@@ -50,6 +58,23 @@ namespace IdentityManager.Services.ControllerService
             if (string.IsNullOrEmpty(sellerId))
                 throw new UnauthorizedAccessException("User is not authenticated!");
 
+            int? imageId = null;
+
+            // ✅ لو فيه صورة ارفعها
+            if (dto.File != null)
+            {
+                var img = new Image
+                {
+                    FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
+                    FileExtension = Path.GetExtension(dto.File.FileName),
+                    FileSize = dto.File.Length,
+                    File = dto.File
+                };
+
+                var savedImage = _imageRepo.Upload(img).Result;
+                imageId = savedImage.Id;
+            }
+
             var entity = new Service
             {
                 Name = dto.Title,
@@ -59,18 +84,18 @@ namespace IdentityManager.Services.ControllerService
                 Status = "active", // أول ما تتعمل تبقى Active
                 SellerId = sellerId,  // ✅ أخدناها من الـ Claims
                 CategoryId = dto.CategoryId,
-                ImageId = dto.ImageId
+                ImageId = imageId
             };
 
-            var added = repo.ADD(entity);
-            repo.SavaChange();
+            var added = _repo.ADD(entity);
+            _repo.SavaChange();
             return ToDto(added);
         }
 
         // ✅ تعديل خدمة
         public ServiceDto Update(int id, UpdateServiceDto dto)
         {
-            var existing = repo.Getbyid(id);
+            var existing = _repo.Getbyid(id);
             if (existing == null) return null;
 
             // 🛑 نتحقق إن اللي بيعدل هو نفس صاحب الخدمة
@@ -78,63 +103,88 @@ namespace IdentityManager.Services.ControllerService
             if (existing.SellerId != sellerId)
                 throw new UnauthorizedAccessException("You cannot edit someone else's service!");
 
-            // نحدّث البيانات
+            // ✅ لو الصورة اتغيرت ارفع الجديدة
+            if (dto.File != null)
+            {
+                var img = new Image
+                {
+                    FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
+                    FileExtension = Path.GetExtension(dto.File.FileName),
+                    FileSize = dto.File.Length,
+                    File = dto.File
+                };
+
+                var savedImage = _imageRepo.Upload(img).Result;
+                existing.ImageId = savedImage.Id;
+            }
+
+            // نحدّث باقي البيانات
             existing.Name = dto.Title;
             existing.Description = dto.Description;
             existing.BasePrice = dto.BasePrice;
             existing.DeliveryTime = dto.DeliveryTime;
             existing.Status = dto.Status ?? existing.Status;
             existing.CategoryId = dto.CategoryId;
-            existing.ImageId = dto.ImageId;
 
-            var updated = repo.UPDATE(existing);
-            repo.SavaChange();
+            var updated = _repo.UPDATE(existing);
+            _repo.SavaChange();
             return ToDto(updated);
         }
 
         // ✅ جلب كل الخدمات
         public IEnumerable<ServiceDto> GetAll()
         {
-            var services = repo.GetAll();
+            var services = _repo.GetAll();
             return services.Select(ToDto);
         }
 
         // ✅ جلب خدمة واحدة بالـ ID
         public ServiceDto GetByID(int id)
         {
-            var service = repo.Getbyid(id);
+            var service = _repo.Getbyid(id);
             return service == null ? null : ToDto(service);
         }
 
         // ✅ حذف خدمة
         public bool Delete(int id)
         {
-            var existing = repo.Getbyid(id);
+            var existing = _repo.Getbyid(id);
             if (existing == null) return false;
 
             var sellerId = GetCurrentUserId();
             if (existing.SellerId != sellerId)
                 throw new UnauthorizedAccessException("You cannot delete someone else's service!");
 
-            var deleted = repo.Delete(id);
+            var deleted = _repo.Delete(id);
             if (!deleted) return false;
 
-            repo.SavaChange();
+            _repo.SavaChange();
             return true;
         }
 
         // ✅ جلب كل خدمات Seller معيّن
         public IEnumerable<ServiceDto> GetAllBySellerId(string sellerId)
         {
-            var services = repo.GetAllBySellerId(sellerId);
+            var services = _repo.GetAllBySellerId(sellerId);
             return services.Select(ToDto);
         }
 
         // ✅ جلب كل خدمات Category معيّن
         public IEnumerable<ServiceDto> GetAllByCategoryId(int categoryId)
         {
-            var services = repo.GetAllByCategoryId(categoryId);
+            var services = _repo.GetAllByCategoryId(categoryId);
             return services.Select(ToDto);
         }
+
+        public IEnumerable<ServiceDto> GetMyServices()
+        {
+            var sellerId = GetCurrentUserId();
+            if (string.IsNullOrEmpty(sellerId))
+                throw new UnauthorizedAccessException("User is not authenticated!");
+
+            var services = _repo.GetAllBySellerId(sellerId);
+            return services.Select(ToDto);
+        }
+
     }
 }
