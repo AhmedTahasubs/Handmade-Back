@@ -32,7 +32,7 @@ namespace IdentityManagerAPI.Controllers
             return Ok(serv);
         }
 
-       
+
         [HttpPost]
         public IActionResult Create([FromForm] CreateServiceDto dto)
         {
@@ -75,5 +75,13 @@ namespace IdentityManagerAPI.Controllers
             var services = _service.GetAllByCategoryId(categoryId);
             return Ok(services);
         }
+        [HttpGet("category/{categoryName}")]
+        [AllowAnonymous]
+        public IActionResult GetAllByCategoryName(string categoryName)
+        {
+            var services = _service.GetAllByCategoryName(categoryName);
+
+            return Ok(services);
+        }
     }
-}
+    }
