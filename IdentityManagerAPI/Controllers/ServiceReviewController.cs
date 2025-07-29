@@ -14,42 +14,50 @@ namespace IdentityManagerAPI.Controllers
 
         public ServiceReviewController(IServiceReviewService service)
         {
-         this.service = service;   
+            this.service = service;
         }
         [HttpGet]
-        public IActionResult GetAll()=>Ok(service.GetAll());
+        public IActionResult GetAll() => Ok(service.GetAll());
 
         [HttpGet("{id}")]
         public IActionResult GetByid(int id)
         {
             var temp = service.GetById(id);
-            if(temp == null) { return NotFound(); }
+            if (temp == null) { return NotFound(); }
             return Ok(temp);
         }
         [HttpPost]
         public IActionResult Create([FromBody] CreateServiceReviewDto dto)
         {
-            var created = service.Create(dto);  
-            return CreatedAtAction(nameof(GetByid), new {id = created.Id},created);
+            var created = service.Create(dto);
+            return CreatedAtAction(nameof(GetByid), new { id = created.Id }, created);
 
         }
         [HttpPut("{id}")]
-        public IActionResult Update(int id,[FromBody] UpdateServiceReviewDto dto) {
-        
-            var updated = service.Update(id, dto); 
-            if(updated == null)  return NotFound(); 
+        public IActionResult Update(int id, [FromBody] UpdateServiceReviewDto dto)
+        {
+
+            var updated = service.Update(id, dto);
+            if (updated == null) return NotFound();
             return Ok(updated);
-        
+
         }
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id) { 
+        public IActionResult Delete(int id)
+        {
             var deleted = service.Delete(id);
             if (deleted) return Ok();
             return NotFound();
         }
 
-        
+        [HttpGet("service/{serviceId}")]
+        public IActionResult GetByServiceId(int serviceId)
+        {
+            var reviews = service.GetByServiceId(serviceId);
+            if (reviews == null || !reviews.Any()) return NotFound();
+            return Ok(reviews);
 
-        
+
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace DataAcess.Repos.IRepos
         ServiceReview Add(ServiceReview serviceReview);
         ServiceReview Update(ServiceReview serviceReview);
         bool Delete(int id);
+        IEnumerable<ServiceReview> GetByServiceId(int serviceId);
         void SavaChange();
 
     }
