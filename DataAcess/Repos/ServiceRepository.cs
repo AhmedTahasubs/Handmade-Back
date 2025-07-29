@@ -35,7 +35,10 @@ namespace DataAcess.Repos
         {
             return db.Services.Include(s => s.Seller)
                 .Include(c => c.Category)
-                .Include(s => s.Reviews).FirstOrDefault(s => s.Id == id);
+                .Include(s => s.Reviews)
+                .Include(s => s.Products)
+               .ThenInclude(p=>p.Image)
+                .FirstOrDefault(s => s.Id == id);
 
         }
 
@@ -75,6 +78,16 @@ namespace DataAcess.Repos
                 .Include(c => c.Category)
                 .Include(s => s.Reviews)
                 .Where(s => s.CategoryId == categoryId)
+                .ToList();
+        }
+
+        public IEnumerable<Service> GetAllByCategoryName(string categoryName)
+        {
+            return db.Services
+                .Include(s => s.Seller)
+                .Include(c => c.Category)
+                .Include(s => s.Reviews)
+                .Where(s => s.Category.Name == categoryName)
                 .ToList();
         }
     }

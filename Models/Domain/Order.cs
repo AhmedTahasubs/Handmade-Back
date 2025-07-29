@@ -9,10 +9,7 @@ namespace Models.Domain
         public int Id { get; set; }
         [ForeignKey("Buyer")]
         public string BuyerId { get; set; }
-        [ForeignKey("Seller")]
-        public string SellerId { get; set; }
-        [ForeignKey("Service")]
-        public int? ServiceId { get; set; }
+        
         public string ShippingAddress { get; set; }
         public string OrderStatus { get; set; }//----------->
         public string PaymentStatus { get; set; }//------------>
@@ -22,8 +19,8 @@ namespace Models.Domain
 
         // Navigation Properties
         public ApplicationUser Buyer { get; set; }
-        public ApplicationUser Seller { get; set; }
-        public Service Service { get; set; }
+        
+        
         public List<OrderItem> OrderItems { get; set; }
 
     }

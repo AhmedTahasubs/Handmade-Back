@@ -79,5 +79,10 @@ namespace IdentityManager.Services.ControllerService
             return result;
         }
 
+        public IEnumerable<ServiceReviewDto> GetByServiceId(int serviceId)
+        {
+            return repo.GetByServiceId(serviceId).Select(r => ToDto(r));
+
+        }
     }
 }

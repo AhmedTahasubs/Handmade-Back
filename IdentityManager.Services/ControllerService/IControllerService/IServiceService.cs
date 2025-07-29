@@ -18,6 +18,9 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         bool Delete(int id);
         IEnumerable<ServiceDto> GetAllBySellerId(string sellerId);
         IEnumerable<ServiceDto> GetAllByCategoryId(int categoryId);
+        IEnumerable<ServiceDto> GetMyServices();
+        IEnumerable<ServiceDto> GetAllByCategoryName(string categoryName);
+
 
     }
 }
