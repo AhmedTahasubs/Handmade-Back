@@ -75,7 +75,7 @@ namespace IdentityManagerAPI.Controllers
             var services = _service.GetAllByCategoryId(categoryId);
             return Ok(services);
         }
-        [HttpGet("category/{categoryName}")]
+        [HttpGet("category/{categoryName:alpha}")]
         [AllowAnonymous]
         public IActionResult GetAllByCategoryName(string categoryName)
         {

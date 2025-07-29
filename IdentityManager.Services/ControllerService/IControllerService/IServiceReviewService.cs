@@ -14,5 +14,6 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         ServiceReviewDto Create(CreateServiceReviewDto dto);
         ServiceReviewDto Update(int id, UpdateServiceReviewDto dto);
         bool Delete(int id);
+        IEnumerable<ServiceReviewDto> GetByServiceId(int serviceId);
     }
 }
