@@ -25,11 +25,13 @@ namespace Models.DTOs.Mapper
             // Product
             // ProductDisplayDTO <-> Product
             CreateMap<Product, ProductDisplayDTO>()
+
                 .AfterMap((src, dest) =>
                 {
                     dest.ImageUrl = src?.Image?.FilePath;
-					dest.Category = src?.Service?.Name ?? string.Empty;
-				});
+                    dest.Category = src?.Service?.Name ?? string.Empty;
+                    dest.SellerName = src?.User?.FullName;
+				        });
             CreateMap<ProductDisplayDTO, Product>(); 
 
 
