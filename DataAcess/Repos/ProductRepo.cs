@@ -54,10 +54,20 @@ namespace DataAcess.Repos
         {
             db.Products.Update(product);
         }
+        public async Task<Product?> UpdateProductStatusAsync(int id, string status)
+        {
+            var p = await db.Products.FindAsync(id);
+            if (p == null)
+                return null;
+            p.Status = status;
+            return p;
+        }
 
         public async Task<int> SaveAsync()
         {
            return await db.SaveChangesAsync();
         }
+
+        
     }
 }

@@ -2,6 +2,7 @@
 using DataAcess.Repos;
 using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Const;
@@ -27,23 +28,36 @@ namespace IdentityManagerAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return Ok(await productService.GetAllDisplayDTOs());
+            var isAdmin = User.IsInRole(AppRoles.Admin);
+            if (isAdmin)
+                return Ok(await productService.GetAllDisplayDTOs());
+            return Ok((await productService.GetAllDisplayDTOs()).Where(dto => dto.Status.ToLower() == ProductStatus.Approved));
+
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
             var product = await productService.GetById(id);
-            if (product == null)
-                return NotFound();
-            return Ok(product);
+            var isAdmin = User.IsInRole(AppRoles.Admin);
+            if (isAdmin && product != null)
+                return Ok(product);
+            if (product?.Status == ProductStatus.Approved)
+                return Ok(product);
+            return NotFound();
+
+
         }
         [HttpGet("get-by-serviceid/{id}")]
         public async Task<IActionResult>GetByServiceId([FromRoute] int id)
         {
-            return Ok(await productService.GetAllProductsBySeriviceId(id));
+            var isAdmin = User.IsInRole(AppRoles.Admin);
+            if (isAdmin)
+                return Ok(await productService.GetAllProductsBySeriviceId(id));
+            return Ok((await productService.GetAllProductsBySeriviceId(id))
+                .Where(dto => dto.Status.ToLower() == ProductStatus.Approved));
         }
 
-		[HttpGet("get-by-sellerid/{id}")]
+        [HttpGet("get-by-sellerid/{id}")]
 		public async Task<IActionResult> GetBySellerId([FromRoute] string? id)
 		{
             if(id is null)
@@ -79,7 +93,7 @@ namespace IdentityManagerAPI.Controllers
             var productDTO = await productService.Create(productCreateDTO, userId);
             return CreatedAtAction(nameof(GetById), new { id = productDTO.Id }, productDTO);
         }
-            [HttpPut("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute]int id,[FromForm] ProductUpdateDTO productUpdateDTO)
         {
             if (id != productUpdateDTO.Id)
@@ -100,6 +114,15 @@ namespace IdentityManagerAPI.Controllers
             ProductDisplayDTO productDisplayDTO = await productService.Update(productUpdateDTO);
 
             return Ok(productDisplayDTO);
+        }
+        [HttpPatch("{id}")]
+        [Authorize(Roles = AppRoles.Admin)]
+        public async Task<IActionResult> PutStatus([FromRoute] int id, [FromForm] UpdateProductStatusDTO dto)
+        {
+            var prod = await productService.UpdateProductStatusAsync(id, dto);
+            if (prod == null)
+                return NotFound();
+            return NoContent();
         }
     }
 }
