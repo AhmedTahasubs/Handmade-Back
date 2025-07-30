@@ -32,7 +32,8 @@ namespace DataAcess.Repos
 
         public async Task<List<Product>> GetAllProductsBySeriviceId(int seriviceId)
         {
-            return await db.Products.Include(p => p.Image).Include(p=> p.Service).Where(p => p.ServiceId == seriviceId).ToListAsync();
+
+            return await db.Products.Include(p => p.Image).Include(p=> p.Service).Include(p => p.User).Where(p => p.ServiceId == seriviceId).ToListAsync();
         }
 		public async Task<List<Product>> GetAllProductsBySellerId(string SellerId)
 		{
@@ -40,13 +41,13 @@ namespace DataAcess.Repos
 		}
 		public async Task<List<Product>> GetAllProducts()
         {
-            return await db.Products.Include(p => p.Image).ToListAsync();
+            return await db.Products.Include(p => p.Image).Include(p => p.User).ToListAsync();
         }
 
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await db.Products.Include(p => p.Image).FirstOrDefaultAsync(p=> p.Id == id);
+            return await db.Products.Include(p => p.Image).Include(p => p.User).FirstOrDefaultAsync(p=> p.Id == id);
         }
 
         public async Task UpdateProductAsync(Product product)

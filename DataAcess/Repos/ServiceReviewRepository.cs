@@ -43,6 +43,15 @@ namespace DataAcess.Repos
                 .SingleOrDefault(s => s.Id == id);
         }
 
+        public IEnumerable<ServiceReview> GetByServiceId(int serviceId)
+        {
+            
+            return db.ServiceReviews
+                .Include(s => s.Reviewer)
+                .Where(s => s.ServiceId == serviceId)
+                .ToList();
+        }
+
         public void SavaChange()
         {
             db.SaveChanges();
