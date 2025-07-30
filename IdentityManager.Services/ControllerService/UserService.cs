@@ -1,7 +1,9 @@
-﻿using DataAcess.Repos.IRepos;
+﻿using AutoMapper;
+using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
 using Models.Domain;
 using Models.DTOs.image;
+using Models.DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +16,23 @@ namespace IdentityManager.Services.ControllerService
     {
         private readonly IImageRepository _imageRepo;
         private readonly IUserRepository _userRepo;
+        private readonly IMapper _mapper;
 
-        public UserService(IImageRepository imageRepo, IUserRepository userRepo)
-        {
-            _imageRepo = imageRepo;
-            _userRepo = userRepo;
-        }
+		public UserService(IImageRepository imageRepo, IUserRepository userRepo, IMapper mapper)
+		{
+			_imageRepo = imageRepo;
+			_userRepo = userRepo;
+			_mapper = mapper;
+		}
 
-        public async Task<object> UploadUserImageAsync(string userId, ImageUploadRequestDto request)
+		public async Task<UserProfileDto> GetById(string userId)
+		{
+			var user = await _userRepo.GetUserByID(userId);
+            var userDto = _mapper.Map<UserProfileDto>(user);
+            return userDto;
+		}
+
+		public async Task<object> UploadUserImageAsync(string userId, ImageUploadRequestDto request)
         {
             if (string.IsNullOrEmpty(userId))
             {

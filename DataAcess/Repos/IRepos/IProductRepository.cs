@@ -13,6 +13,7 @@ namespace DataAcess.Repos.IRepos
 
         Task<Product?> GetProductByIdAsync(int id);
         Task<List<Product>> GetAllProductsBySeriviceId(int seriviceId);
+        Task<List<Product>> GetAllProductsBySellerId(string sellerId);
 
         Task CreateProductAsync(Product product);
         Task UpdateProductAsync(Product product);

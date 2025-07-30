@@ -18,7 +18,9 @@ namespace Models.DTOs
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string SellerId { get; set; } = null!;
+        public string? SellerName { get; set; } = null!;
         public int ServiceId { get; set; }
         public string? ImageUrl {  get; set; }
-    }
+        public string Category {  get; set; } = null!;
+	}
 }

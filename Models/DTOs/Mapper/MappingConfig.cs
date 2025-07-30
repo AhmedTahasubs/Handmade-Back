@@ -18,13 +18,20 @@ namespace Models.DTOs.Mapper
         {
             // User
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
+            CreateMap<ApplicationUser, UserProfileDto>().ReverseMap();
 
-			//Category
-			CreateMap<CreateCategoryDto, Category>().ReverseMap();
+            //Category
+            CreateMap<CreateCategoryDto, Category>().ReverseMap();
             // Product
             // ProductDisplayDTO <-> Product
             CreateMap<Product, ProductDisplayDTO>()
-                .AfterMap((src, dest) => dest.ImageUrl = src?.Image?.FilePath);
+
+                .AfterMap((src, dest) =>
+                {
+                    dest.ImageUrl = src?.Image?.FilePath;
+                    dest.Category = src?.Service?.Name ?? string.Empty;
+                    dest.SellerName = src?.User?.FullName;
+				        });
             CreateMap<ProductDisplayDTO, Product>(); 
 
 
