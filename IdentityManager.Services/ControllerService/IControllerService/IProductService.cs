@@ -2,6 +2,7 @@
 using Models.Domain;
 using Models.DTOs;
 using Models.DTOs.image;
+using Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         Task<ProductDisplayDTO> Update(ProductUpdateDTO dto);
         Task Delete(Product p);
         Task<int> UploadProductImageAsync(IFormFile File);
+        Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto);
     }
 }
