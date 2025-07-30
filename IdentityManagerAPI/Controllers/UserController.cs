@@ -44,5 +44,14 @@ namespace IdentityManagerAPI.Controllers
             return Ok(user);
         }
 
-    }
+		//get all users
+		[HttpGet]
+		//[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> GetAllUsers()
+		{
+			var users = await userService.GetAllUsers();
+			return Ok(users);
+		}
+
+	}
 }

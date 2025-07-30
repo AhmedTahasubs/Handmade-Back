@@ -31,6 +31,12 @@ namespace IdentityManager.Services.ControllerService
             var userDto = _mapper.Map<UserProfileDto>(user);
             return userDto;
 		}
+		public async Task<IEnumerable<UserMangementDto>> GetAllUsers()
+		{
+			var users = await _userRepo.GetAllAsync();
+			var usersDto = _mapper.Map<IEnumerable<UserMangementDto>>(users);
+            return usersDto;
+		}
 
 		public async Task<object> UploadUserImageAsync(string userId, ImageUploadRequestDto request)
         {

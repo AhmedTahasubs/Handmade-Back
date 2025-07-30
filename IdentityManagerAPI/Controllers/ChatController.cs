@@ -1,5 +1,6 @@
 ﻿using DataAcess.Repos.IRepos;
 using Microsoft.AspNetCore.Mvc;
+using Models.Domain;
 using System.Security.Claims;
 
 namespace IdentityManagerAPI.Controllers
@@ -29,5 +30,15 @@ namespace IdentityManagerAPI.Controllers
             await chatRepo.MarkMessagesAsDeliveredAsync(messageIds);
             return NoContent();
         }
+        [HttpGet("contacts")]
+        public async Task<IActionResult> GetChatContactsAsync()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (currentUserId == null)
+                return BadRequest();
+            return Ok(await chatRepo.GetChatContactsAsync(currentUserId));
+        }
+
     }
+
 }

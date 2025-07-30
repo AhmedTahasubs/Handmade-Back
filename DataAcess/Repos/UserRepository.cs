@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Models.Domain;
 using Models.Const;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace DataAcess.Repos
@@ -40,8 +41,8 @@ namespace DataAcess.Repos
 
         public async Task<ApplicationUser> GetUserByID(string userID)
         {
-            var user = await db.ApplicationUser.FindAsync(userID);
-            return user ?? throw new InvalidOperationException("User not found.");
+            var user = await db.ApplicationUser.Include(u => u.Image).FirstOrDefaultAsync(u => u.Id == userID);
+			return user ?? throw new InvalidOperationException("User not found.");
         }
 
         public async Task<bool> IsUniqueUserName(string username)
@@ -52,7 +53,8 @@ namespace DataAcess.Repos
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            var user = await userManager.FindByNameAsync(loginRequestDTO.UserName);
+            var user = await userManager.FindByNameAsync(loginRequestDTO.UserName) ??
+                await userManager.FindByEmailAsync(loginRequestDTO.UserName);
             if (user == null || !await userManager.CheckPasswordAsync(user, loginRequestDTO.Password))
             {
                 return new LoginResponseDTO()

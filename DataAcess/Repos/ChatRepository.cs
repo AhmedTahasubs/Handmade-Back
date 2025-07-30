@@ -53,7 +53,26 @@ namespace DataAcess.Repos
             await DB.SaveChangesAsync();
             return chatMessage;
         }
-
        
+        public async Task<List<ChatContact>> GetChatContactsAsync(string currentUserId)
+        {
+            var contacts = await DB.ChatMessages
+                .Where(m => m.SenderId == currentUserId || m.ReceiverId == currentUserId)
+                .Select(m => m.SenderId == currentUserId ? m.ReceiverId : m.SenderId)
+                .Distinct()
+                .Join(DB.ApplicationUser.Include(u => u.Image),
+                      contactId => contactId,
+                      user => user.Id,
+                      (contactId, user) => new ChatContact
+                      {
+                          UserId = user.Id,
+                          FullName = user.FullName,
+                          ProfileImage = user.Image != null ? user.Image.FilePath : null
+                      })
+                .ToListAsync();
+
+            return contacts;
+        }
+
     }
 }

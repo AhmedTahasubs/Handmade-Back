@@ -74,5 +74,22 @@ namespace IdentityManagerAPI.Controllers
             await _cartItemRepository.DeleteAsync(item);
             return NoContent();
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCartItem(int id, [FromBody] CartItemUpdateDto dto)
+        {
+            if (id != dto.Id)
+                return BadRequest("ID mismatch");
+
+            var existingItem = await _cartItemRepository.GetAsync(i => i.Id == id);
+            if (existingItem == null)
+                return NotFound();
+
+            existingItem.Quantity = dto.Quantity;
+            existingItem.UnitPrice = dto.UnitPrice;
+
+            await _cartItemRepository.UpdateAsync(existingItem);
+
+            return NoContent();
+        }
     }
 }
