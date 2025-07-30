@@ -10,10 +10,12 @@ namespace Models.DTOs.Auth
     public class RegisterRequestDTO
     {
         [Required]
+        [MinLength(3,ErrorMessage ="The length must be more than 3.")]
         [RegularExpression("^[a-zA-Z0-9-.@+]*$",ErrorMessage = "Username can only contain letters or digits")]
         public string UserName { get; set; } = null!;
         [Required]
-        [RegularExpression("^[a-zA-Z-_ ]*$", ErrorMessage = "Only english letters are allowed.")]
+		[MinLength(3, ErrorMessage = "The length must be more than 3.")]
+		[RegularExpression("^[a-zA-Z-_ ]*$", ErrorMessage = "Only english letters are allowed.")]
         public string Name { get; set; } = null!;
 		[Required]
         [EmailAddress]

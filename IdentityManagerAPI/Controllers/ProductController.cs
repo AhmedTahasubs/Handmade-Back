@@ -44,10 +44,18 @@ namespace IdentityManagerAPI.Controllers
         }
 
 		[HttpGet("get-by-sellerid/{id}")]
-		public async Task<IActionResult> GetBySellerId([FromRoute] string id)
+		public async Task<IActionResult> GetBySellerId([FromRoute] string? id)
 		{
+            if(id is null)
+            {
+				var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+				return Ok(await productService.GetAllProductsBySellerId(userId!));
+			}
+                
 			return Ok(await productService.GetAllProductsBySellerId(id));
 		}
+
+
 
 		[HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
