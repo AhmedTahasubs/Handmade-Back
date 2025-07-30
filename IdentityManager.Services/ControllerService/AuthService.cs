@@ -24,35 +24,40 @@ namespace IdentityManager.Services.ControllerService
             return await _userRepository.Login(loginRequestDTO);
         }
 
+        public async Task ValidateUserNameAndEmail(string Email, string userName)
+        {
+			var emailExist = await _userRepository.GetAsync(user => user.Email == Email);
+			var usernameExist = await _userRepository.IsUniqueUserName(userName);
+			if (!usernameExist)
+			{
+				throw new ValidationException("Username Already exists");
+			}
+			if (emailExist != null)
+			{
+				throw new ValidationException("Email Already exists");
+			}
+		}
+
         public async Task<object> RegisterAdminAsync(RegisterRequestDTO registerRequestDTO)
         {
-            var emailExist = await _userRepository.GetAsync(user => user.Email == registerRequestDTO.Email);
-            if (emailExist != null)
-            {
-                throw new ValidationException("Email Already exists");
-            }
-
-            return await _userRepository.RegisterAdmin(registerRequestDTO);
+            await ValidateUserNameAndEmail(registerRequestDTO.Email, registerRequestDTO.UserName);
+			return await _userRepository.RegisterAdmin(registerRequestDTO);
         }
         public async Task<object> RegisterSellerAsync(SellerRegisterDto sellerRegisterDto)
         {
-            var emailExist = await _userRepository.GetAsync(user => user.Email == sellerRegisterDto.Email);
-            if (emailExist != null)
+			await ValidateUserNameAndEmail(sellerRegisterDto.Email, sellerRegisterDto.UserName);
+            var nationalIdExist = await _userRepository.GetAsync(user => user.NationalId == sellerRegisterDto.NationalId);
+			if (nationalIdExist != null)
             {
-                throw new ValidationException("Email Already exists");
-            }
+				throw new ValidationException("National ID Already exists");
+			}
 
-            return await _userRepository.RegisterSeller(sellerRegisterDto);
+				return await _userRepository.RegisterSeller(sellerRegisterDto);
         }
         public async Task<object> RegisterCustomerAsync(CustomerRegisterDto customerRegisterDto)
         {
-            var emailExist = await _userRepository.GetAsync(user => user.Email == customerRegisterDto.Email);
-            if (emailExist != null)
-            {
-                throw new ValidationException("Email Already exists");
-            }
-
-            return await _userRepository.RegisterCustomer(customerRegisterDto);
+			await ValidateUserNameAndEmail(customerRegisterDto.Email, customerRegisterDto.UserName);
+			return await _userRepository.RegisterCustomer(customerRegisterDto);
         }
     }
 }

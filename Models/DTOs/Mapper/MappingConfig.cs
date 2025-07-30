@@ -8,7 +8,6 @@ using Models.DTOs.OrderItemDTO;
 using System;
 using Models.DTOs.Categories;
 using Models.Const;
-//using Models.DTOs.Category;
 
 namespace Models.DTOs.Mapper
 {
@@ -18,20 +17,25 @@ namespace Models.DTOs.Mapper
         {
             // User
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
-            CreateMap<ApplicationUser, UserProfileDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserProfileDto>()
+                .AfterMap((src, dest) =>
+				{
+					dest.Imageurl = src?.Image?.FilePath ?? "https://localhost:7047/images/avatar.png";
+				});
+			CreateMap<ApplicationUser, UserMangementDto>().ReverseMap();
+			//Category
+			CreateMap<CreateCategoryDto, Category>().ReverseMap();
 
-            //Category
-            CreateMap<CreateCategoryDto, Category>().ReverseMap();
             // Product
-            // ProductDisplayDTO <-> Product
             CreateMap<Product, ProductDisplayDTO>()
 
                 .AfterMap((src, dest) =>
                 {
-                    dest.ImageUrl = src?.Image?.FilePath;
-                    dest.Category = src?.Service?.Name ?? string.Empty;
-                    dest.SellerName = src?.User?.FullName;
-				        });
+					dest.ImageUrl = src?.Image?.FilePath;
+					dest.Category = src?.Service?.Name ?? string.Empty;
+					dest.SellerName = src?.User?.FullName;
+					
+				});
             CreateMap<ProductDisplayDTO, Product>(); 
 
 
@@ -46,7 +50,7 @@ namespace Models.DTOs.Mapper
             CreateMap<ProductCreateDTO, Product>()
                 .AfterMap((src, dest) => dest.Status = ProductStatus.Pending);
 
-            ;
+            
 
             // Order
             CreateMap<Order, OrderReadDto>();
