@@ -67,7 +67,7 @@ namespace IdentityManagerAPI.Controllers
             return Ok(myServices);
         }
 
-        // ✅ جلب خدمات كاتيجوري معيّن
+        
         [HttpGet("category/{categoryId}")]
         [AllowAnonymous]
         public IActionResult GetAllByCategoryId(int categoryId)

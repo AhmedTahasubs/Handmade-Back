@@ -53,14 +53,14 @@ namespace IdentityManager.Services.ControllerService
         // ✅ إنشاء خدمة جديدة
         public ServiceDto Create(CreateServiceDto dto)
         {
-            // نجيب الـ SellerId من الـ Claims
+           
             var sellerId = GetCurrentUserId();
             if (string.IsNullOrEmpty(sellerId))
                 throw new UnauthorizedAccessException("User is not authenticated!");
 
             int? imageId = null;
 
-            // ✅ لو فيه صورة ارفعها
+            
             if (dto.File != null)
             {
                 var img = new Image
