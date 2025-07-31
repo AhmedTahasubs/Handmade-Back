@@ -7,7 +7,10 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Const;
 using Models.Domain;
 using Models.DTOs;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IdentityManagerAPI.Controllers
@@ -18,11 +21,15 @@ namespace IdentityManagerAPI.Controllers
     {
         private readonly IProductService productService;
         private readonly IProductRepository repo;
+        private readonly IServiceService _ServiceService;
+        private readonly string _openAiApiKey;
 
-        public ProductController(IProductService _productService, IProductRepository _repo)
+        public ProductController(IConfiguration config, IServiceService serviceService,IProductService _productService, IProductRepository _repo)
         {
             productService = _productService;
             repo = _repo;
+            _ServiceService = serviceService;
+            _openAiApiKey = config["OpenAI:ApiKey"];
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -76,6 +83,12 @@ namespace IdentityManagerAPI.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
                 return Unauthorized();
+            bool isValid = await productService.ValidateProductMatchesServiceAsync(productCreateDTO.Description, productCreateDTO.ServiceId);
+            if (!isValid)
+            {
+                return BadRequest("Product and service do not match in domain.");
+            }
+
             var productDTO = await productService.Create(productCreateDTO, userId);
             return CreatedAtAction(nameof(GetById), new { id = productDTO.Id }, productDTO);
         }
@@ -101,5 +114,7 @@ namespace IdentityManagerAPI.Controllers
 
             return Ok(productDisplayDTO);
         }
+
+        
     }
 }

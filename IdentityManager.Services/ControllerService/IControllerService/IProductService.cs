@@ -21,5 +21,6 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         Task<ProductDisplayDTO> Update(ProductUpdateDTO dto);
         Task Delete(Product p);
         Task<int> UploadProductImageAsync(IFormFile File);
+        Task<bool> ValidateProductMatchesServiceAsync(string productDescription, int serviceId);
     }
 }
