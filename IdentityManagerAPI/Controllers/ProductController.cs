@@ -8,8 +8,14 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Const;
 using Models.Domain;
 using Models.DTOs;
+<<<<<<< HEAD
 using Models.DTOs.Product;
+=======
+using System.Net.Http.Headers;
+>>>>>>> 72a30b375a1fe173fe340e4ab4b9f9fb2260f6c1
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IdentityManagerAPI.Controllers
@@ -20,6 +26,7 @@ namespace IdentityManagerAPI.Controllers
     {
         private readonly IProductService productService;
         private readonly IProductRepository repo;
+<<<<<<< HEAD
         private readonly ISearchService searchService;
 
         public ProductController(
@@ -30,6 +37,17 @@ namespace IdentityManagerAPI.Controllers
             productService = _productService;
             repo = _repo;
             searchService = _searchService;
+=======
+        private readonly IServiceService _ServiceService;
+        private readonly string _openAiApiKey;
+
+        public ProductController(IConfiguration config, IServiceService serviceService,IProductService _productService, IProductRepository _repo)
+        {
+            productService = _productService;
+            repo = _repo;
+            _ServiceService = serviceService;
+            _openAiApiKey = config["OpenAI:ApiKey"];
+>>>>>>> 72a30b375a1fe173fe340e4ab4b9f9fb2260f6c1
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -96,6 +114,12 @@ namespace IdentityManagerAPI.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
                 return Unauthorized();
+            bool isValid = await productService.ValidateProductMatchesServiceAsync(productCreateDTO.Description, productCreateDTO.ServiceId);
+            if (!isValid)
+            {
+                return BadRequest("Product and service do not match in domain.");
+            }
+
             var productDTO = await productService.Create(productCreateDTO, userId);
             return CreatedAtAction(nameof(GetById), new { id = productDTO.Id }, productDTO);
         }
@@ -131,6 +155,7 @@ namespace IdentityManagerAPI.Controllers
             return NoContent();
         }
 
+<<<<<<< HEAD
         [HttpPost("search")]
         public async Task<IActionResult> Search([FromBody] SearchRequestDto searchRequest)
         {
@@ -178,5 +203,7 @@ namespace IdentityManagerAPI.Controllers
                 return StatusCode(500, "An error occurred while updating all product embeddings.");
             }
         }
+=======
+>>>>>>> 72a30b375a1fe173fe340e4ab4b9f9fb2260f6c1
     }
 }

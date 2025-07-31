@@ -1,0 +1,75 @@
+### Content Moderation API Tests
+
+### 1. Health Check
+GET {{baseUrl}}/api/ContentModeration/health
+
+### 2. Test API Key (Check if Cohere API key is working)
+GET {{baseUrl}}/api/ContentModeration/test-api-key
+
+### 3. Test Entries (Test with specific content types)
+GET {{baseUrl}}/api/ContentModeration/test-entries
+
+### 4. Debug Test (Run this first to check if moderation is working)
+GET {{baseUrl}}/api/ContentModeration/debug-test
+
+### 5. Simple Content Moderation - Safe Content
+POST {{baseUrl}}/api/ContentModeration/moderate
+Content-Type: application/json
+
+{
+  "text": "Beautiful handmade wooden table for sale. Perfect for living room decoration."
+}
+
+### 6. Simple Content Moderation - Unsafe Content
+POST {{baseUrl}}/api/ContentModeration/moderate
+Content-Type: application/json
+
+{
+  "text": "This product contains explicit adult content and violence."
+}
+
+### 7. Detailed Content Moderation
+POST {{baseUrl}}/api/ContentModeration/moderate-detailed
+Content-Type: application/json
+
+{
+  "text": "This product contains explicit adult content and violence."
+}
+
+### 8. Product Moderation - Safe Product
+POST {{baseUrl}}/api/ContentModeration/moderate-product
+Content-Type: application/json
+
+{
+  "title": "Handmade Wooden Coffee Table",
+  "description": "Beautiful handcrafted coffee table made from premium oak wood. Perfect for living room decoration.",
+  "sellerId": "user123"
+}
+
+### 9. Product Moderation - Unsafe Product
+POST {{baseUrl}}/api/ContentModeration/moderate-product
+Content-Type: application/json
+
+{
+  "title": "Explicit Adult Content",
+  "description": "This product contains explicit sexual content and adult material that is inappropriate.",
+  "sellerId": "user789"
+}
+
+### 10. Batch Moderation (Admin Only)
+POST {{baseUrl}}/api/ContentModeration/moderate-batch
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "texts": [
+    "Handmade jewelry collection",
+    "Professional photography services",
+    "Explicit adult content here",
+    "Beautiful ceramic vase"
+  ]
+}
+
+### Variables
+@baseUrl = https://localhost:7001
+@adminToken = your_admin_jwt_token_here 

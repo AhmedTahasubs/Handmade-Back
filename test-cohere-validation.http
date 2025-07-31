@@ -1,0 +1,74 @@
+### Cohere AI Product-Service Validation Tests
+### Base URL: http://localhost:5025
+
+### Test 1: Valid Product-Service Match
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Photography services for weddings and events",
+  "productDescription": "A DSLR camera with wedding-specific lens kits"
+}
+
+### Test 2: Valid Product-Service Match
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Online graphic design services for logos and branding",
+  "productDescription": "A logo design template pack"
+}
+
+### Test 3: Invalid Product-Service Match
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Home cleaning services",
+  "productDescription": "A handmade wooden desk"
+}
+
+### Test 4: Invalid Product-Service Match
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Photography services",
+  "productDescription": "Handmade leather wallet"
+}
+
+### Test 5: Web Development Service
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Web development services",
+  "productDescription": "Custom website template with responsive design"
+}
+
+### Test 6: Digital Marketing Service
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Digital marketing consultation",
+  "productDescription": "Marketing strategy guide and analytics tools"
+}
+
+### Test 7: Handmade Products Service
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Handmade jewelry and accessories",
+  "productDescription": "Handcrafted silver necklace with gemstones"
+}
+
+### Test 8: Furniture Making Service
+POST {{baseUrl}}/api/Product/validate-product-service
+Content-Type: application/json
+
+{
+  "serviceDescription": "Custom furniture making and woodworking",
+  "productDescription": "Handmade wooden coffee table with oak finish"
+} 
