@@ -18,12 +18,18 @@ namespace IdentityManager.Services.ControllerService
         private readonly IProductRepository productRepo;
         private readonly IImageRepository _imageRepo;
         private readonly IMapper mapper;
+        private readonly ISearchService searchService;
 
-        public ProductService(IProductRepository productRepository, IImageRepository imageRepository, IMapper _mapper)
+        public ProductService(
+            IProductRepository productRepository, 
+            IImageRepository imageRepository, 
+            IMapper _mapper,
+            ISearchService _searchService)
         {
             productRepo = productRepository;
             _imageRepo = imageRepository;
             mapper = _mapper;
+            searchService = _searchService;
         }
         private void ValidateFileUpload(IFormFile File)
         {
@@ -83,6 +89,18 @@ namespace IdentityManager.Services.ControllerService
             p.SellerId = sellerId;
             await productRepo.CreateProductAsync(p);
             await productRepo.SaveAsync();
+            
+            // Update embeddings for the new product
+            try
+            {
+                await searchService.UpdateProductEmbeddingsAsync(p.Id);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the product creation
+                Console.WriteLine($"Failed to update embeddings for new product {p.Id}: {ex.Message}");
+            }
+            
             return mapper.Map<ProductDisplayDTO>(p);
         }
 
@@ -98,6 +116,18 @@ namespace IdentityManager.Services.ControllerService
                 existing.ImageId = await UploadProductImageAsync(dto.File);
             await productRepo.UpdateProductAsync(existing);
             await productRepo.SaveAsync();
+            
+            // Update embeddings for the updated product
+            try
+            {
+                await searchService.UpdateProductEmbeddingsAsync(existing.Id);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the product update
+                Console.WriteLine($"Failed to update embeddings for updated product {existing.Id}: {ex.Message}");
+            }
+            
             return mapper.Map<ProductDisplayDTO>(existing);
         }
 
