@@ -131,7 +131,6 @@ namespace IdentityManager.Services.ControllerService
         {
             return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProductsBySellerId(sellerId));
         }
-
         public async Task<bool> ValidateProductMatchesServiceAsync(string productDescription, int serviceId)
         {
             var service = _serviceRepository.Getbyid(serviceId);
@@ -180,5 +179,11 @@ namespace IdentityManager.Services.ControllerService
         }
 
 
+        public async Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto)
+        {
+            var prod = await productRepo.UpdateProductStatusAsync(id, dto.Status);
+            await productRepo.SaveAsync();
+            return prod;
+        }
     }
 }
