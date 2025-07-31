@@ -73,6 +73,16 @@ builder.Services.AddScoped<ICustomRequestRepository, CustomRequestRepository>();
 builder.Services.AddScoped<ICartRepository,CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
+// Add AI Search Services
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<CohereEmbedder>(provider =>
+{
+    var httpClient = provider.GetRequiredService<HttpClient>();
+    var apiKey = builder.Configuration["Cohere:ApiKey"] ?? "KD2nozebMtBawxWruHYQe6Z2oZ4IQn4YhugsQNdU";
+    return new CohereEmbedder(httpClient, apiKey);
+});
+builder.Services.AddScoped<ISearchService, SearchService>();
+
 // Add OpenAPI with Bearer Authentication Support
 builder.Services.AddOpenApi("v1", options =>
 {
