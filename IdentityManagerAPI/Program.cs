@@ -1,3 +1,4 @@
+using System.Text;
 using DataAcess;
 using DataAcess.Repos;
 using DataAcess.Repos.IRepos;
@@ -16,8 +17,8 @@ using Microsoft.OpenApi.Models;
 using Models.Domain;
 using Models.DTOs.Mapper;
 using Scalar.AspNetCore;
+using Services;
 using StackExchange.Redis;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +73,11 @@ builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<ICustomRequestRepository, CustomRequestRepository>();
 builder.Services.AddScoped<ICartRepository,CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+
+
+// Add Cart Service
+builder.Services.AddScoped<CartService>();
+
 
 // Add AI Search Services
 builder.Services.AddHttpClient();
