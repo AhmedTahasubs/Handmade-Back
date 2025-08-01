@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services;
 using Models.DTOs.ShoppingCart;
-using Microsoft.AspNetCore.Authorization;
+using Services;
 namespace IdentityManagerAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -27,7 +27,27 @@ namespace IdentityManagerAPI.Controllers
         public async Task<IActionResult> GetCart()
         {
             var cart = await _cartService.GetCartAsync(GetCustomerId());
-            return Ok(cart);
+
+            if (cart == null)
+                return NotFound();
+
+            var cartDto = new ShoppingCartDto
+            {
+                Id = cart.Id,
+                CustomerId = cart.CustomerId,
+                Items = cart.Items.Select(item => new CartItemDto
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    ProductTitle = item.Product.Title,
+                    ProductImageUrl = item.Product.Image?.FilePath ?? "",
+                    ArtisanName = item.Product.User?.FullName ?? "Unknown",
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice
+                }).ToList()
+            };
+
+            return Ok(cartDto);
         }
 
         [HttpPost("items")]

@@ -101,6 +101,10 @@ namespace Services
             return await _context.ShoppingCarts
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
+                    .ThenInclude(p => p.Image)
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Product)
+                    .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(c => c.CustomerId == customerId);
         }
 
