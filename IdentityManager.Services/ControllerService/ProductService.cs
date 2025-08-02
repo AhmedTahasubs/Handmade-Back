@@ -21,24 +21,22 @@ namespace IdentityManager.Services.ControllerService
     {
         private readonly IProductRepository productRepo;
         private readonly IImageRepository _imageRepo;
-        private readonly IServiceRepository _serviceRepository;
         private readonly IMapper mapper;
-        private readonly string _cohereApiKey;
+        private readonly ISearchService searchService;
+
         public ProductService(
-     IConfiguration config,
-     IServiceRepository serviceRepository,
-     IProductRepository productRepository,
-     IImageRepository imageRepository,
-     IMapper _mapper)
+            IProductRepository productRepository, 
+            IImageRepository imageRepository, 
+            IMapper _mapper,
+            ISearchService _searchService)
         {
             productRepo = productRepository;
             _imageRepo = imageRepository;
-            _serviceRepository = serviceRepository;
             mapper = _mapper;
 
-            _cohereApiKey = config["OpenAI:ApiKey"];
-        }
 
+
+        }
         private void ValidateFileUpload(IFormFile File)
         {
             if (File == null)
@@ -97,6 +95,18 @@ namespace IdentityManager.Services.ControllerService
             p.SellerId = sellerId;
             await productRepo.CreateProductAsync(p);
             await productRepo.SaveAsync();
+            
+            // Update embeddings for the new product
+            try
+            {
+                await searchService.UpdateProductEmbeddingsAsync(p.Id);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the product creation
+                Console.WriteLine($"Failed to update embeddings for new product {p.Id}: {ex.Message}");
+            }
+            
             return mapper.Map<ProductDisplayDTO>(p);
         }
 
@@ -112,6 +122,18 @@ namespace IdentityManager.Services.ControllerService
                 existing.ImageId = await UploadProductImageAsync(dto.File);
             await productRepo.UpdateProductAsync(existing);
             await productRepo.SaveAsync();
+            
+            // Update embeddings for the updated product
+            try
+            {
+                await searchService.UpdateProductEmbeddingsAsync(existing.Id);
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the product update
+                Console.WriteLine($"Failed to update embeddings for updated product {existing.Id}: {ex.Message}");
+            }
+            
             return mapper.Map<ProductDisplayDTO>(existing);
         }
 
@@ -131,54 +153,11 @@ namespace IdentityManager.Services.ControllerService
         {
             return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProductsBySellerId(sellerId));
         }
-
-        public async Task<bool> ValidateProductMatchesServiceAsync(string productDescription, int serviceId)
+        public async Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto)
         {
-            var service = _serviceRepository.Getbyid(serviceId);
-            if (service == null) return false;
-
-            string serviceDescription = service.Description;
-            string prompt = $"I have a service described as: \"{serviceDescription}\". " +
-                            $"I want to add a product with the following description: \"{productDescription}\". " +
-                            $"Does this product clearly match the purpose of the service? Answer with only one word: Yes or No.";
-
-            using var http = new HttpClient();
-            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _cohereApiKey);
-
-            var requestBody = new
-            {
-                model = "command",
-                prompt = prompt,
-                max_tokens = 10,
-                temperature = 0.2
-            };
-
-            var jsonContent = new StringContent(
-                JsonSerializer.Serialize(requestBody),
-                Encoding.UTF8,
-                "application/json"
-            );
-
-            var response = await http.PostAsync("https://api.cohere.ai/v1/generate", jsonContent);
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Cohere request failed. Status: {response.StatusCode}, Details: {error}");
-            }
-
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonDocument.Parse(responseString);
-
-            string reply = result.RootElement
-                .GetProperty("generations")[0]
-                .GetProperty("text")
-                .GetString()
-                .Trim()
-                .ToLower();
-
-            return reply.StartsWith("yes");
+            var prod = await productRepo.UpdateProductStatusAsync(id, dto.Status);
+            await productRepo.SaveAsync();
+            return prod;
         }
-
-
     }
 }
