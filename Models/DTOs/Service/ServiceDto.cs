@@ -14,7 +14,7 @@ namespace Models.DTOs.Service
         public string Description { get; set; }
         public decimal BasePrice { get; set; }
         public int DeliveryTime { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public string SellerName { get; set; }
         public string CategoryName { get; set; }
         public double AvgRating { get; set; }

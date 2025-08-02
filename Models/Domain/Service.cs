@@ -21,7 +21,7 @@ namespace Models.Domain
         public string Description { get; set; }
         public decimal BasePrice { get; set; }
         public int DeliveryTime { get; set; } // بالأيام
-        public string Status { get; set; } = "active"; // active - paused - awiting
+        public string Status { get; set; }  
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         

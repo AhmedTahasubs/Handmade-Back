@@ -191,5 +191,21 @@ namespace IdentityManager.Services.ControllerService
             var services = _repo.GetAllByCategoryName(categoryName);
             return services.Select(ToDto);
         }
+        public async Task<Service?> UpdateServiceStatusAsync(int id, UpdateServiceStatusDTO dto)
+        {
+            var validStatuses = new[] { "approved", "rejected", "pending" };
+            if (!validStatuses.Contains(dto.Status.ToLower()))
+                throw new ArgumentException("Invalid status value.");
+
+            var prod = await _repo.UpdateServiceStatusAsync(id, dto.Status.ToLower());
+
+            if (prod == null)
+                return null;
+
+            _repo.SavaChange();
+            return prod;
+        }
+
+
     }
 }

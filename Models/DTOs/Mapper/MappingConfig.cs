@@ -46,6 +46,12 @@ namespace Models.DTOs.Mapper
 
             CreateMap<Models.Domain.Product, ProductUpdateDTO>();
 
+            // ServiceUpdateDTO <-> Service 
+            CreateMap<ProductUpdateDTO, Models.Domain.Product>()
+                .AfterMap((src, dest) => dest.Status = ProductStatus.Pending);
+
+            CreateMap<Models.Domain.Product, ProductUpdateDTO>();
+
 
             // ProductCreateDTO -> Product
             CreateMap<ProductCreateDTO, Models.Domain.Product>()

@@ -1,4 +1,5 @@
 ﻿using Models.Domain;
+using Models.DTOs;
 using Models.DTOs.Categories;
 using Models.DTOs.Service;
 using System;
@@ -20,6 +21,7 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         IEnumerable<ServiceDto> GetAllByCategoryId(int categoryId);
         IEnumerable<ServiceDto> GetMyServices();
         IEnumerable<ServiceDto> GetAllByCategoryName(string categoryName);
+        Task<Service?> UpdateServiceStatusAsync(int id, UpdateServiceStatusDTO dto);
 
 
     }

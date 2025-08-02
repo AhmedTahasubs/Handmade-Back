@@ -90,5 +90,15 @@ namespace DataAcess.Repos
                 .Where(s => s.Category.Name == categoryName)
                 .ToList();
         }
+        public async Task<Service?> UpdateServiceStatusAsync(int id, string status)
+        {
+            var p = await db.Services.FindAsync(id);
+            if (p == null)
+                return null;
+            p.Status = status;
+            return p;
+        }
+
+        
     }
 }

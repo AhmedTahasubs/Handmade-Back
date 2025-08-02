@@ -1,6 +1,9 @@
-﻿using IdentityManager.Services.ControllerService.IControllerService;
+﻿using IdentityManager.Services.ControllerService;
+using IdentityManager.Services.ControllerService.IControllerService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.Const;
+using Models.DTOs;
 using Models.DTOs.Service;
 
 namespace IdentityManagerAPI.Controllers
@@ -83,5 +86,23 @@ namespace IdentityManagerAPI.Controllers
 
             return Ok(services);
         }
+        [HttpPatch("{id}")]
+        [Authorize(Roles = AppRoles.Admin)]
+        public async Task<IActionResult> UpdateServiceStatus([FromRoute] int id, [FromForm] UpdateServiceStatusDTO dto)
+        {
+            try
+            {
+                var prod = await _service.UpdateServiceStatusAsync(id, dto);
+                if (prod == null)
+                    return NotFound();
+
+                return Ok(new { message = "Status updated", status = prod.Status });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
-    }
+}
