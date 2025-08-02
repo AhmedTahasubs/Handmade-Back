@@ -77,6 +77,9 @@ builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
 // Add Cart Service
 builder.Services.AddScoped<CartService>();
+//add order service
+builder.Services.AddScoped<ICustomerOrderService, CustomerOrderService>();
+
 
 
 // Add AI Search Services

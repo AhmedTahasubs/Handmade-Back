@@ -22,12 +22,8 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         Task<ProductDisplayDTO> Update(ProductUpdateDTO dto);
         Task Delete(Product p);
         Task<int> UploadProductImageAsync(IFormFile File);
-<<<<<<< HEAD
-        Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto);
-=======
-        Task<bool> ValidateProductMatchesServiceAsync(string productDescription, int serviceId);
+
         Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto);
 
->>>>>>> 13616546d9738fd8e7ba1239d9560b9571a2012b
     }
 }

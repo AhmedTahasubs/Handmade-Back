@@ -153,57 +153,6 @@ namespace IdentityManager.Services.ControllerService
         {
             return mapper.Map<IEnumerable<ProductDisplayDTO>>(await productRepo.GetAllProductsBySellerId(sellerId));
         }
-<<<<<<< HEAD
-=======
-        public async Task<bool> ValidateProductMatchesServiceAsync(string productDescription, int serviceId)
-        {
-            var service = _serviceRepository.Getbyid(serviceId);
-            if (service == null) return false;
-
-            string serviceDescription = service.Description;
-            string prompt = $"I have a service described as: \"{serviceDescription}\". " +
-                            $"I want to add a product with the following description: \"{productDescription}\". " +
-                            $"Does this product clearly match the purpose of the service? Answer with only one word: Yes or No.";
-
-            using var http = new HttpClient();
-            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _cohereApiKey);
-
-            var requestBody = new
-            {
-                model = "command",
-                prompt = prompt,
-                max_tokens = 10,
-                temperature = 0.2
-            };
-
-            var jsonContent = new StringContent(
-                JsonSerializer.Serialize(requestBody),
-                Encoding.UTF8,
-                "application/json"
-            );
-
-            var response = await http.PostAsync("https://api.cohere.ai/v1/generate", jsonContent);
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Cohere request failed. Status: {response.StatusCode}, Details: {error}");
-            }
-
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonDocument.Parse(responseString);
-
-            string reply = result.RootElement
-                .GetProperty("generations")[0]
-                .GetProperty("text")
-                .GetString()
-                .Trim()
-                .ToLower();
-
-            return reply.StartsWith("yes");
-        }
-
-
->>>>>>> 13616546d9738fd8e7ba1239d9560b9571a2012b
         public async Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto)
         {
             var prod = await productRepo.UpdateProductStatusAsync(id, dto.Status);
