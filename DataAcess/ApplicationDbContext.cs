@@ -28,6 +28,10 @@ namespace DataAcess
         // new cart and cart item 
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+
+        // new order and order item
+        public DbSet<CustomerOrder> CustomerOrders { get; set; }
+        public DbSet<CustomerOrderItem> CustomerOrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -87,6 +91,12 @@ namespace DataAcess
                 .WithMany()
                 .HasForeignKey(m => m.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CustomerOrder>()
+                   .HasMany(o => o.Items)
+                   .WithOne(i => i.CustomerOrder)
+                   .HasForeignKey(i => i.CustomerOrderId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
         }
     }
