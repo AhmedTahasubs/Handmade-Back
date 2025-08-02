@@ -134,6 +134,7 @@ namespace IdentityManagerAPI.Controllers
             return NoContent();
         }
 
+<<<<<<< HEAD
         [HttpPost("search")]
         public async Task<IActionResult> Search([FromBody] SearchRequestDto searchRequest)
         {
@@ -181,5 +182,7 @@ namespace IdentityManagerAPI.Controllers
                 return StatusCode(500, "An error occurred while updating all product embeddings.");
             }
         }
+=======
+>>>>>>> 13616546d9738fd8e7ba1239d9560b9571a2012b
     }
 }
