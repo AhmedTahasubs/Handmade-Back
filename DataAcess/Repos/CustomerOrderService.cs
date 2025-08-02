@@ -146,5 +146,18 @@ namespace DataAcess.Repos
 
             return true;
         }
+        public async Task<OrderResponse?> GetOrderByIdAsync(int orderId)
+        {
+            var order = await _context.CustomerOrders
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Image)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+                return null;
+
+            return MapOrderToResponse(order);
+        }
     }
 }

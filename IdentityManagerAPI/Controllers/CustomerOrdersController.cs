@@ -68,5 +68,15 @@ namespace IdentityManagerAPI.Controllers
 
             return Ok(new { message = "Status updated successfully." });
         }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderById(int orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (order == null)
+                return NotFound(new { message = "Order not found." });
+
+            return Ok(order);
+        }
     }
 }
