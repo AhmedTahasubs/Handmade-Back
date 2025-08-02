@@ -67,6 +67,7 @@ namespace DataAcess.Repos
             var orders = await _context.CustomerOrders
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Image)
                 .ToListAsync();
 
             return orders.Select(MapOrderToResponse).ToList();
@@ -78,6 +79,7 @@ namespace DataAcess.Repos
                 .Where(o => o.CustomerId == customerId)
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Image)
                 .ToListAsync();
 
             return orders.Select(MapOrderToResponse).ToList();
@@ -116,7 +118,7 @@ namespace DataAcess.Repos
                     Id = i.Id,
                     ProductId = i.ProductId,
                     ProductTitle = i.Product?.Title ?? "Unknown",
-                    ProductImageUrl = i.Product?.Image?.FilePath ?? string.Empty,
+                    ProductImageUrl = i.Product?.Image?.FilePath ?? "Image Not Loaded",
                     SellerId = i.SellerId,
                     Quantity = i.Quantity,
                     UnitPrice = i.UnitPrice,
