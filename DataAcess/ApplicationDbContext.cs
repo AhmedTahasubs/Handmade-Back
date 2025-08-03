@@ -32,6 +32,8 @@ namespace DataAcess
         // new order and order item
         public DbSet<CustomerOrder> CustomerOrders { get; set; }
         public DbSet<CustomerOrderItem> CustomerOrderItems { get; set; }
+        // new custom request
+        public DbSet<CustomerRequest> CustomerRequests { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -97,6 +99,24 @@ namespace DataAcess
                    .WithOne(i => i.CustomerOrder)
                    .HasForeignKey(i => i.CustomerOrderId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CustomerRequest>()
+                .HasOne(r => r.Buyer)
+                .WithMany() // or .WithMany(u => u.CustomerRequestsSent) if you define navigation in user
+                .HasForeignKey(r => r.BuyerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CustomerRequest>()
+                .HasOne(r => r.Seller)
+                .WithMany() // or .WithMany(u => u.CustomerRequestsReceived)
+                .HasForeignKey(r => r.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CustomerRequest>()
+                .HasOne(r => r.Service)
+                .WithMany() // or .WithMany(s => s.CustomerRequests)
+                .HasForeignKey(r => r.ServiceId)
+                .OnDelete(DeleteBehavior.SetNull);
 
         }
     }
