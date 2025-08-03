@@ -9,7 +9,6 @@ namespace DataAcess.Repos.IRepos
 {
     public interface IServiceRepository
     {
-       
 
         IEnumerable<Service> GetAll();
         Service Getbyid(int id);
@@ -20,5 +19,6 @@ namespace DataAcess.Repos.IRepos
         IEnumerable<Service> GetAllBySellerId(string sellerId);
         IEnumerable<Service> GetAllByCategoryId(int categoryId);
         IEnumerable<Service> GetAllByCategoryName(string categoryName);
+        Task<Service?> UpdateServiceStatusAsync(int id, string status);
     }
 }

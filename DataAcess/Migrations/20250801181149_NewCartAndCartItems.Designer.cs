@@ -4,6 +4,7 @@ using DataAcess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAcess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801181149_NewCartAndCartItems")]
+    partial class NewCartAndCartItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,7 +251,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Models.Domain.CartItem", b =>
@@ -277,7 +280,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Models.Domain.Category", b =>
@@ -319,7 +322,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("LastUpdatedById");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Models.Domain.ChatMessage", b =>
@@ -354,7 +357,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("ChatMessages", (string)null);
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("Models.Domain.CustomRequest", b =>
@@ -400,80 +403,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("CustomRequests", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Domain.CustomerOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CustomerOrders", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Domain.CustomerOrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerOrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CustomerOrderItems", (string)null);
+                    b.ToTable("CustomRequests");
                 });
 
             modelBuilder.Entity("Models.Domain.Image", b =>
@@ -501,7 +431,7 @@ namespace DataAcess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Models.Domain.Order", b =>
@@ -541,7 +471,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Models.Domain.OrderItem", b =>
@@ -570,7 +500,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Models.Domain.Product", b =>
@@ -633,7 +563,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Models.Domain.Service", b =>
@@ -683,7 +613,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("Models.Domain.ServiceReview", b =>
@@ -717,7 +647,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("ServiceReviews", (string)null);
+                    b.ToTable("ServiceReviews");
                 });
 
             modelBuilder.Entity("Models.Domain.ShoppingCart", b =>
@@ -742,7 +672,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("ShoppingCarts", (string)null);
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Models.Domain.ShoppingCartItem", b =>
@@ -771,7 +701,7 @@ namespace DataAcess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoppingCartItems", (string)null);
+                    b.ToTable("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("Models.Domain.ApplicationUser", b =>
@@ -977,25 +907,6 @@ namespace DataAcess.Migrations
                     b.Navigation("Service");
                 });
 
-            modelBuilder.Entity("Models.Domain.CustomerOrderItem", b =>
-                {
-                    b.HasOne("Models.Domain.CustomerOrder", "CustomerOrder")
-                        .WithMany("Items")
-                        .HasForeignKey("CustomerOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Domain.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CustomerOrder");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Models.Domain.Order", b =>
                 {
                     b.HasOne("Models.Domain.ApplicationUser", "Buyer")
@@ -1145,11 +1056,6 @@ namespace DataAcess.Migrations
             modelBuilder.Entity("Models.Domain.Category", b =>
                 {
                     b.Navigation("Services");
-                });
-
-            modelBuilder.Entity("Models.Domain.CustomerOrder", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Models.Domain.Order", b =>

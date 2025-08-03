@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration.UserSecrets;
 using Models.Const;
 using Models.Domain;
 using Models.DTOs;
+using Models.DTOs.Product;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -19,11 +20,16 @@ namespace IdentityManagerAPI.Controllers
     {
         private readonly IProductService productService;
         private readonly IProductRepository repo;
+        private readonly ISearchService searchService;
 
-        public ProductController(IProductService _productService, IProductRepository _repo)
+        public ProductController(
+            IProductService _productService, 
+            IProductRepository _repo,
+            ISearchService _searchService)
         {
             productService = _productService;
             repo = _repo;
+            searchService = _searchService;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -123,6 +129,54 @@ namespace IdentityManagerAPI.Controllers
             if (prod == null)
                 return NotFound();
             return NoContent();
+        }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] SearchRequestDto searchRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var results = await searchService.SearchProductsAsync(searchRequest.Query, searchRequest.MaxResults);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                // In production, you'd want proper logging here
+                return StatusCode(500, "An error occurred while processing your search request.");
+            }
+        }
+
+        [HttpPost("update-embeddings/{id}")]
+        [Authorize(Roles = AppRoles.Admin)]
+        public async Task<IActionResult> UpdateProductEmbeddings([FromRoute] int id)
+        {
+            try
+            {
+                await searchService.UpdateProductEmbeddingsAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating product embeddings.");
+            }
+        }
+
+        [HttpPost("update-all-embeddings")]
+        [Authorize(Roles = AppRoles.Admin)]
+        public async Task<IActionResult> UpdateAllProductEmbeddings()
+        {
+            try
+            {
+                await searchService.UpdateAllProductEmbeddingsAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating all product embeddings.");
+            }
         }
     }
 }

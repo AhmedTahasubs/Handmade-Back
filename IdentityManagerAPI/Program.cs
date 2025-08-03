@@ -1,3 +1,4 @@
+using System.Text;
 using DataAcess;
 using DataAcess.Repos;
 using DataAcess.Repos.IRepos;
@@ -18,8 +19,8 @@ using Models.Domain;
 using Models.Domain.Settings;
 using Models.DTOs.Mapper;
 using Scalar.AspNetCore;
+using Services;
 using StackExchange.Redis;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +79,24 @@ builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<ICustomRequestRepository, CustomRequestRepository>();
 builder.Services.AddScoped<ICartRepository,CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+
+
+// Add Cart Service
+builder.Services.AddScoped<CartService>();
+//add order service
+builder.Services.AddScoped<ICustomerOrderService, CustomerOrderService>();
+
+
+
+// Add AI Search Services
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<CohereEmbedder>(provider =>
+{
+    var httpClient = provider.GetRequiredService<HttpClient>();
+    var apiKey = builder.Configuration["Cohere:ApiKey"] ?? "KD2nozebMtBawxWruHYQe6Z2oZ4IQn4YhugsQNdU";
+    return new CohereEmbedder(httpClient, apiKey);
+});
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 // Add OpenAPI with Bearer Authentication Support
 builder.Services.AddOpenApi("v1", options =>

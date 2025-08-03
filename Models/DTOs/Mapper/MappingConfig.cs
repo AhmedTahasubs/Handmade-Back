@@ -8,6 +8,7 @@ using Models.DTOs.OrderItemDTO;
 using System;
 using Models.DTOs.Categories;
 using Models.Const;
+using Models.DTOs.Product;
 
 namespace Models.DTOs.Mapper
 {
@@ -27,7 +28,7 @@ namespace Models.DTOs.Mapper
 			CreateMap<CreateCategoryDto, Category>().ReverseMap();
 
             // Product
-            CreateMap<Product, ProductDisplayDTO>()
+            CreateMap<Models.Domain.Product, ProductDisplayDTO>()
 
                 .AfterMap((src, dest) =>
                 {
@@ -36,18 +37,18 @@ namespace Models.DTOs.Mapper
 					dest.SellerName = src?.User?.FullName;
 					
 				});
-            CreateMap<ProductDisplayDTO, Product>(); 
+            CreateMap<ProductDisplayDTO, Models.Domain.Product>(); 
 
 
             // ProductUpdateDTO <-> Product
-            CreateMap<ProductUpdateDTO, Product>()
+            CreateMap<ProductUpdateDTO, Models.Domain.Product>()
                 .AfterMap((src, dest) => dest.Status = ProductStatus.Pending);
 
-            CreateMap<Product, ProductUpdateDTO>();
+            CreateMap<Models.Domain.Product, ProductUpdateDTO>();
 
 
             // ProductCreateDTO -> Product
-            CreateMap<ProductCreateDTO, Product>()
+            CreateMap<ProductCreateDTO, Models.Domain.Product>()
                 .AfterMap((src, dest) => dest.Status = ProductStatus.Pending);
 
             

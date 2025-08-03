@@ -19,7 +19,7 @@ namespace IdentityManager.Services.ControllerService
         private readonly ImageRepository _imageRepo;
         private readonly IMapper _mapper;
 
-        public ServiceService(IServiceRepository repo, IHttpContextAccessor httpContextAccessor, ImageRepository imageRepo , IMapper mapper)
+        public ServiceService(IServiceRepository repo, IHttpContextAccessor httpContextAccessor, ImageRepository imageRepo, IMapper mapper)
         {
             _repo = repo;
             _httpContextAccessor = httpContextAccessor;
@@ -53,14 +53,14 @@ namespace IdentityManager.Services.ControllerService
         // ✅ إنشاء خدمة جديدة
         public ServiceDto Create(CreateServiceDto dto)
         {
-            // نجيب الـ SellerId من الـ Claims
+
             var sellerId = GetCurrentUserId();
             if (string.IsNullOrEmpty(sellerId))
                 throw new UnauthorizedAccessException("User is not authenticated!");
 
             int? imageId = null;
 
-            // ✅ لو فيه صورة ارفعها
+
             if (dto.File != null)
             {
                 var img = new Image
@@ -81,8 +81,8 @@ namespace IdentityManager.Services.ControllerService
                 Description = dto.Description,
                 BasePrice = dto.BasePrice,
                 DeliveryTime = dto.DeliveryTime,
-                Status = "active", // أول ما تتعمل تبقى Active
-                SellerId = sellerId,  // ✅ أخدناها من الـ Claims
+                Status = "pending", 
+                SellerId = sellerId,  
                 CategoryId = dto.CategoryId,
                 ImageId = imageId
             };
@@ -92,18 +92,18 @@ namespace IdentityManager.Services.ControllerService
             return ToDto(added);
         }
 
-        // ✅ تعديل خدمة
+     
         public ServiceDto Update(int id, UpdateServiceDto dto)
         {
             var existing = _repo.Getbyid(id);
             if (existing == null) return null;
 
-            // 🛑 نتحقق إن اللي بيعدل هو نفس صاحب الخدمة
+
             var sellerId = GetCurrentUserId();
             if (existing.SellerId != sellerId)
                 throw new UnauthorizedAccessException("You cannot edit someone else's service!");
 
-            // ✅ لو الصورة اتغيرت ارفع الجديدة
+            
             if (dto.File != null)
             {
                 var img = new Image
@@ -118,7 +118,7 @@ namespace IdentityManager.Services.ControllerService
                 existing.ImageId = savedImage.Id;
             }
 
-            // نحدّث باقي البيانات
+            
             existing.Name = dto.Title;
             existing.Description = dto.Description;
             existing.BasePrice = dto.BasePrice;
@@ -131,21 +131,21 @@ namespace IdentityManager.Services.ControllerService
             return ToDto(updated);
         }
 
-        // ✅ جلب كل الخدمات
+        
         public IEnumerable<ServiceDto> GetAll()
         {
             var services = _repo.GetAll();
             return services.Select(ToDto);
         }
 
-        // ✅ جلب خدمة واحدة بالـ ID
+       
         public ServiceDto GetByID(int id)
         {
             var service = _repo.Getbyid(id);
             return service == null ? null : ToDto(service);
         }
 
-        // ✅ حذف خدمة
+     
         public bool Delete(int id)
         {
             var existing = _repo.Getbyid(id);
@@ -162,14 +162,14 @@ namespace IdentityManager.Services.ControllerService
             return true;
         }
 
-        // ✅ جلب كل خدمات Seller معيّن
+        
         public IEnumerable<ServiceDto> GetAllBySellerId(string sellerId)
         {
             var services = _repo.GetAllBySellerId(sellerId);
             return services.Select(ToDto);
         }
 
-        // ✅ جلب كل خدمات Category معيّن
+        
         public IEnumerable<ServiceDto> GetAllByCategoryId(int categoryId)
         {
             var services = _repo.GetAllByCategoryId(categoryId);
@@ -191,5 +191,21 @@ namespace IdentityManager.Services.ControllerService
             var services = _repo.GetAllByCategoryName(categoryName);
             return services.Select(ToDto);
         }
+        public async Task<Service?> UpdateServiceStatusAsync(int id, UpdateServiceStatusDTO dto)
+        {
+            var validStatuses = new[] { "approved", "rejected", "pending" };
+            if (!validStatuses.Contains(dto.Status.ToLower()))
+                throw new ArgumentException("Invalid status value.");
+
+            var prod = await _repo.UpdateServiceStatusAsync(id, dto.Status.ToLower());
+
+            if (prod == null)
+                return null;
+
+            _repo.SavaChange();
+            return prod;
+        }
+
+
     }
 }
