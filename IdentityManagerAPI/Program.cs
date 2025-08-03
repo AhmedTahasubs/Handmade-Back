@@ -3,6 +3,7 @@ using DataAcess;
 using DataAcess.Repos;
 using DataAcess.Repos.IRepos;
 using DataAcess.Seeds;
+using DataAcess.Services;
 using IdentityManager.Services.ControllerService;
 using IdentityManager.Services.ControllerService.IControllerService;
 using IdentityManagerAPI;
@@ -85,6 +86,8 @@ builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<CartService>();
 //add order service
 builder.Services.AddScoped<ICustomerOrderService, CustomerOrderService>();
+// Add Custom Request Service
+builder.Services.AddScoped<ICustomerRequestService, CustomerRequestService>();
 
 
 
