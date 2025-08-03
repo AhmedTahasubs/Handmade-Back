@@ -25,9 +25,9 @@ namespace DataAcess.Repos
 
         public IEnumerable<Service> GetAll()
         {
-            return db.Services.Include(s=>s.Seller)
-                .Include(c=>c.Category)
-                .Include(s=>s.Reviews)
+            return db.Services.Include(s => s.Seller)
+                .Include(c => c.Category)
+                .Include(s => s.Reviews)
                 .ToList();
         }
 
@@ -37,14 +37,14 @@ namespace DataAcess.Repos
                 .Include(c => c.Category)
                 .Include(s => s.Reviews)
                 .Include(s => s.Products)
-               .ThenInclude(p=>p.Image)
+               .ThenInclude(p => p.Image)
                 .FirstOrDefault(s => s.Id == id);
 
         }
 
         public bool Delete(int id)
         {
-           var temp = db.Services.SingleOrDefault(s=>s.Id ==id);
+            var temp = db.Services.SingleOrDefault(s => s.Id == id);
             if (temp == null) { return false; }
             db.Services.Remove(temp);
             return true;
@@ -52,7 +52,7 @@ namespace DataAcess.Repos
 
         public Service UPDATE(Service service)
         {
-           db.Update(service);
+            db.Update(service);
             return service;
         }
 
@@ -90,5 +90,15 @@ namespace DataAcess.Repos
                 .Where(s => s.Category.Name == categoryName)
                 .ToList();
         }
+        public async Task<Service?> UpdateServiceStatusAsync(int id, string status)
+        {
+            var p = await db.Services.FindAsync(id);
+            if (p == null)
+                return null;
+            p.Status = status;
+            return p;
+        }
+
+
     }
 }
