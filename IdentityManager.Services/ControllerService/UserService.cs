@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAcess.Repos.IRepos;
 using IdentityManager.Services.ControllerService.IControllerService;
+using Microsoft.AspNetCore.Identity;
 using Models.Domain;
 using Models.DTOs.image;
 using Models.DTOs.User;
@@ -17,12 +18,14 @@ namespace IdentityManager.Services.ControllerService
         private readonly IImageRepository _imageRepo;
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
+		private readonly UserManager<ApplicationUser> _userManager;
 
-		public UserService(IImageRepository imageRepo, IUserRepository userRepo, IMapper mapper)
+		public UserService(IImageRepository imageRepo, IUserRepository userRepo, IMapper mapper, UserManager<ApplicationUser> userManager)
 		{
 			_imageRepo = imageRepo;
 			_userRepo = userRepo;
 			_mapper = mapper;
+			_userManager = userManager;
 		}
 
 		public async Task<UserProfileDto> GetById(string userId)
@@ -34,8 +37,17 @@ namespace IdentityManager.Services.ControllerService
 		public async Task<IEnumerable<UserMangementDto>> GetAllUsers()
 		{
 			var users = await _userRepo.GetAllAsync();
-			var usersDto = _mapper.Map<IEnumerable<UserMangementDto>>(users);
-            return usersDto;
+			var usersDto = new List<UserMangementDto>();
+			foreach (var user in users)
+			{
+				var roles = await _userManager.GetRolesAsync(user);
+
+				var userDto = _mapper.Map<UserMangementDto>(user);
+				userDto.Roles = roles.ToList();
+
+				usersDto.Add(userDto);
+			}
+			return usersDto;
 		}
 
 		public async Task<object> UploadUserImageAsync(string userId, ImageUploadRequestDto request)
@@ -82,5 +94,13 @@ namespace IdentityManager.Services.ControllerService
                 throw new Exception("File is not an image");
             }
         }
-    }
+
+		public async Task DeleteUser(string userId)
+		{
+			var user = await _userRepo.GetUserByID(userId);
+            user.IsDeleted = !user.IsDeleted;
+            user.LastUpdatedOn = DateTime.Now;
+			await _userRepo.DeleteUser(user);
+		}
+	}
 }

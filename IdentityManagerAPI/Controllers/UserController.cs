@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace IdentityManagerAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
-    {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class UserController : ControllerBase
+	{
 
-        private readonly IUserService userService;
-        private readonly ApplicationDbContext _context;
+		private readonly IUserService userService;
+		private readonly ApplicationDbContext _context;
 
 		public UserController(IUserService userService, ApplicationDbContext context)
 		{
@@ -28,21 +28,21 @@ namespace IdentityManagerAPI.Controllers
 
 		public IUserRepository UserRepo { get; }
 
-        [HttpPost]
-        [Authorize]
-        [Route("uploadUserImage")]
-        public async Task<IActionResult> UploadUserImage([FromForm] ImageUploadRequestDto request)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await userService.UploadUserImageAsync(userId, request);
-            return Ok(result);
-        }
+		[HttpPost]
+		[Authorize]
+		[Route("uploadUserImage")]
+		public async Task<IActionResult> UploadUserImage([FromForm] ImageUploadRequestDto request)
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var result = await userService.UploadUserImageAsync(userId, request);
+			return Ok(result);
+		}
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetUser([FromRoute]string id)
-        {
-            var user = await userService.GetById(id);
-            return Ok(user);
-        }
+		public async Task<IActionResult> GetUser([FromRoute] string id)
+		{
+			var user = await userService.GetById(id);
+			return Ok(user);
+		}
 
 		//get all users
 		[HttpGet]
@@ -53,5 +53,12 @@ namespace IdentityManagerAPI.Controllers
 			return Ok(users);
 		}
 
+		[HttpDelete("{id}")]
+		//[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> DeleteUser([FromRoute] string id)
+		{
+			await userService.DeleteUser(id);
+			return NoContent();
+		}
 	}
 }

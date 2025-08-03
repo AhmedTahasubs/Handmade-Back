@@ -41,7 +41,7 @@ namespace DataAcess.Repos
         {
             var category = await _db.Categories.FindAsync(id);
             if (category == null) return false;
-            category.IsDeleted = true;
+            category.IsDeleted = !category.IsDeleted;
             _db.Categories.Update(category);
             await _db.SaveChangesAsync();
             return true;

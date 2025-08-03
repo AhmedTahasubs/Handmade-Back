@@ -8,6 +8,8 @@ using System.Net;
 using DataAcess.Repos.IRepos;
 using Models.Domain;
 using IdentityManager.Services.ControllerService.IControllerService;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using IdentityManager.Services.ControllerService;
 
 namespace IdentityManagerAPI.Controllers
 {
@@ -16,14 +18,16 @@ namespace IdentityManagerAPI.Controllers
     public class AuthUserController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthUserController(IAuthService authService)
-        {
-            _authService = authService;
-        }
-        [HttpPost("login")]
+        private readonly IMailingService _mailingService;
+		public AuthUserController(IAuthService authService, IMailingService mailingService)
+		{
+			_authService = authService;
+			this._mailingService = mailingService;
+		}
+		[HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
-            var result = await _authService.LoginAsync(loginRequestDTO);
+			var result = await _authService.LoginAsync(loginRequestDTO);
             return Ok(result);
         }
 
@@ -47,5 +51,21 @@ namespace IdentityManagerAPI.Controllers
             var result = await _authService.RegisterCustomerAsync(customerRegisterDto);
             return Ok(result);
         }
-    }
+
+
+		[HttpPost("Forgot-Password")]
+		public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto forgotPasswordRequestDto)
+		{
+			var result = await _authService.ForgotPasswordAsync(forgotPasswordRequestDto);
+			
+			return Ok(result);
+		}
+
+		[HttpPost("Reset-Password")]
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto resetPasswordRequestDto)
+		{
+			var result = await _authService.ResetPasswordAsync(resetPasswordRequestDto);
+			return Ok(result);
+		}
+	}
 }
