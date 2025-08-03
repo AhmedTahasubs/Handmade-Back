@@ -9,12 +9,14 @@ using IdentityManagerAPI;
 using IdentityManagerAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Models.Domain;
+using Models.Domain.Settings;
 using Models.DTOs.Mapper;
 using Scalar.AspNetCore;
 using Services;
@@ -37,6 +39,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+//Email
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+
+builder.Services.AddTransient<IMailingService, MailingService>();
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingConfig));

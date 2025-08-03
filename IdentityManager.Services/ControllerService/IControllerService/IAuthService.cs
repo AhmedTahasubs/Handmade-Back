@@ -13,5 +13,8 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         Task<object> RegisterAdminAsync(RegisterRequestDTO registerRequestDTO);
         Task<object> RegisterSellerAsync(SellerRegisterDto sellerRegistertDTO);
         Task<object> RegisterCustomerAsync(CustomerRegisterDto customerRegistertDTO);
-    }
+        Task<object> ForgotPasswordAsync(ForgotPasswordRequestDto forgotPasswordRequestDto);
+        Task<object> ResetPasswordAsync(ResetPasswordRequestDto resetPasswordRequestDto);
+
+	}
 }

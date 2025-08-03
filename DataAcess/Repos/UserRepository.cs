@@ -39,7 +39,12 @@ namespace DataAcess.Repos
             securityKey = configuration.GetValue<string>("ApiSettings:Secret") ?? throw new InvalidOperationException("ApiSettings:Secret is not configured.");
         }
 
-        public async Task<ApplicationUser> GetUserByID(string userID)
+		public async Task DeleteUser(ApplicationUser user)
+		{
+			  await userManager.UpdateAsync(user);
+		}
+
+		public async Task<ApplicationUser> GetUserByID(string userID)
         {
             var user = await db.ApplicationUser.Include(u => u.Image).FirstOrDefaultAsync(u => u.Id == userID);
 			return user ?? throw new InvalidOperationException("User not found.");
@@ -55,7 +60,7 @@ namespace DataAcess.Repos
         {
             var user = await userManager.FindByNameAsync(loginRequestDTO.UserName) ??
                 await userManager.FindByEmailAsync(loginRequestDTO.UserName);
-            if (user == null || !await userManager.CheckPasswordAsync(user, loginRequestDTO.Password))
+            if (user == null || !await userManager.CheckPasswordAsync(user, loginRequestDTO.Password)|| user.IsDeleted)
             {
                 return new LoginResponseDTO()
                 {
