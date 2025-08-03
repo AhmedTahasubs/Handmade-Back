@@ -1,13 +1,16 @@
-﻿using IdentityManager.Services.ControllerService.IControllerService;
+﻿using IdentityManager.Services.ControllerService;
+using IdentityManager.Services.ControllerService.IControllerService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.Const;
+using Models.DTOs;
 using Models.DTOs.Service;
 
 namespace IdentityManagerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // كل الـ APIs محمية ما عدا اللي عليها AllowAnonymous
+    [Authorize] 
     public class ServiceController : ControllerBase
     {
         private readonly IServiceService _service;
@@ -17,12 +20,12 @@ namespace IdentityManagerAPI.Controllers
             _service = service;
         }
 
-        // ✅ جلب كل الخدمات (بدون تسجيل دخول)
+    
         [HttpGet]
         [AllowAnonymous]
         public IActionResult GetAll() => Ok(_service.GetAll());
 
-        // ✅ جلب خدمة واحدة بالـ ID
+        
         [HttpGet("{id}")]
         [AllowAnonymous]
         public IActionResult GetById(int id)
@@ -40,7 +43,7 @@ namespace IdentityManagerAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
-        // ✅ تعديل خدمة + ممكن تغير الصورة
+       
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromForm] UpdateServiceDto dto)
         {
@@ -49,7 +52,7 @@ namespace IdentityManagerAPI.Controllers
             return Ok(updated);
         }
 
-        // ✅ حذف خدمة
+   
         [HttpDelete("{id}")]
         public IActionResult DeleteById(int id)
         {
@@ -58,16 +61,16 @@ namespace IdentityManagerAPI.Controllers
             return Ok(deleted);
         }
 
-        // ✅ جلب كل الخدمات الخاصة بالـ Seller الحالي
+        
         [HttpGet("seller")]
         public IActionResult GetMyServices()
         {
-            // ✅ مش هنجيب SellerId هنا، السيرفس نفسه بياخده من الـ Claims
+         
             var myServices = _service.GetMyServices();
             return Ok(myServices);
         }
 
-        // ✅ جلب خدمات كاتيجوري معيّن
+
         [HttpGet("category/{categoryId}")]
         [AllowAnonymous]
         public IActionResult GetAllByCategoryId(int categoryId)
@@ -83,5 +86,23 @@ namespace IdentityManagerAPI.Controllers
 
             return Ok(services);
         }
+        [HttpPatch("{id}")]
+        [Authorize(Roles = AppRoles.Admin)]
+        public async Task<IActionResult> UpdateServiceStatus([FromRoute] int id, [FromForm] UpdateServiceStatusDTO dto)
+        {
+            try
+            {
+                var prod = await _service.UpdateServiceStatusAsync(id, dto);
+                if (prod == null)
+                    return NotFound();
+
+                return Ok(new { message = "Status updated", status = prod.Status });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
-    }
+}
