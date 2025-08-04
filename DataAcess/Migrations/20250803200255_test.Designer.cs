@@ -4,6 +4,7 @@ using DataAcess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAcess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250803200255_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -495,9 +498,6 @@ namespace DataAcess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ReferenceImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -514,8 +514,6 @@ namespace DataAcess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerId");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("SellerId");
 
@@ -1052,12 +1050,6 @@ namespace DataAcess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Models.Domain.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Models.Domain.ApplicationUser", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId")
@@ -1070,8 +1062,6 @@ namespace DataAcess.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Buyer");
-
-                    b.Navigation("Image");
 
                     b.Navigation("Seller");
 

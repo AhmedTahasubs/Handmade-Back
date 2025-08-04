@@ -26,6 +26,9 @@ namespace Models.Domain
         [Required]
         public string SellerId { get; set; }
 
+        [Required]
+        public int ImageId { get; set; }
+
         public int? ServiceId { get; set; }
 
         [Required]
@@ -42,5 +45,6 @@ namespace Models.Domain
         public ApplicationUser Buyer { get; set; }
         public ApplicationUser Seller { get; set; }
         public Service? Service { get; set; }
+        public Image Image { get; set; }
     }
 }

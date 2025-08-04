@@ -8,10 +8,12 @@ namespace DataAcess.Services
     public class CustomerRequestService : ICustomerRequestService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageRepository _imageRepo;
 
-        public CustomerRequestService(ApplicationDbContext context)
+        public CustomerRequestService(ApplicationDbContext context, IImageRepository imageRepo)
         {
             _context = context;
+            _imageRepo = imageRepo;
         }
         public async Task<List<CustomerRequestResponse>> GetAllAsync()
         {
@@ -37,13 +39,25 @@ namespace DataAcess.Services
         }
         public async Task<CustomerRequestResponse> CreateAsync(CreateCustomerRequestDto dto, string customerId)
         {
+            // Upload image
+            var image = new Image
+            {
+                File = dto.File,
+                FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
+                FileExtension = Path.GetExtension(dto.File.FileName)
+            };
+
+            var uploadedImage = await _imageRepo.Upload(image);
+
             var request = new CustomerRequest
             {
                 BuyerId = customerId,
                 SellerId = dto.SellerId,
                 ServiceId = dto.ServiceId,
                 Description = dto.Description,
-                ReferenceImageUrl = dto.ReferenceImageUrl,
+                ReferenceImageUrl = uploadedImage.FilePath,
+                CreatedAt = DateTime.UtcNow,
+                Status = RequestStatus.Pending
             };
 
             _context.CustomerRequests.Add(request);

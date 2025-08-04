@@ -33,7 +33,7 @@ namespace IdentityManagerAPI.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create([FromBody] CreateCustomerRequestDto dto)
+        public async Task<IActionResult> Create([FromForm] CreateCustomerRequestDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await _service.CreateAsync(dto, userId);
