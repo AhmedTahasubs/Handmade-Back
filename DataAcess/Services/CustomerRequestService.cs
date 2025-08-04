@@ -39,32 +39,54 @@ namespace DataAcess.Services
         }
         public async Task<CustomerRequestResponse> CreateAsync(CreateCustomerRequestDto dto, string customerId)
         {
-            // Upload image
-            var image = new Image
+            try
             {
-                File = dto.File,
-                FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
-                FileExtension = Path.GetExtension(dto.File.FileName)
-            };
+                var image = new Image
+                {
+                    File = dto.File,
+                    FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
+                    FileExtension = Path.GetExtension(dto.File.FileName)
+                };
 
-            var uploadedImage = await _imageRepo.Upload(image);
+                var uploadedImage = await _imageRepo.Upload(image);
 
-            var request = new CustomerRequest
+                if (uploadedImage == null || string.IsNullOrEmpty(uploadedImage.FilePath))
+                    throw new Exception("Image upload failed or file path is null");
+
+                var request = new CustomerRequest
+                {
+                    BuyerId = customerId,
+                    SellerId = dto.SellerId,
+                    ServiceId = dto.ServiceId,
+                    Description = dto.Description,
+                    ReferenceImageUrl = uploadedImage.FilePath,
+                    CreatedAt = DateTime.UtcNow,
+                    ImageId = uploadedImage.Id,
+                    Status = RequestStatus.Pending
+                };
+
+                _context.CustomerRequests.Add(request);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR: " + ex.Message);
+                    Console.WriteLine("INNER: " + ex.InnerException?.Message);
+                    throw; // rethrow to let you see it in Postman if needed
+                }
+
+                return MapToResponse(request);
+            }
+            catch (Exception ex)
             {
-                BuyerId = customerId,
-                SellerId = dto.SellerId,
-                ServiceId = dto.ServiceId,
-                Description = dto.Description,
-                ReferenceImageUrl = uploadedImage.FilePath,
-                CreatedAt = DateTime.UtcNow,
-                Status = RequestStatus.Pending
-            };
-
-            _context.CustomerRequests.Add(request);
-            await _context.SaveChangesAsync();
-
-            return MapToResponse(request);
+                Console.WriteLine("ERROR: " + ex.Message);
+                Console.WriteLine("INNER: " + ex.InnerException?.Message);
+                throw;
+            }
         }
+
 
         public async Task<List<CustomerRequestResponse>> GetBySellerIdAsync(string sellerId)
         {
@@ -113,10 +135,7 @@ namespace DataAcess.Services
             var request = await _context.CustomerRequests.FindAsync(id);
             if (request == null) return false;
 
-            if (!Enum.TryParse<RequestStatus>(status, true, out var parsedStatus))
-                return false;
-
-            request.Status = parsedStatus;
+            request.Status = status;
             await _context.SaveChangesAsync();
             return true;
         }

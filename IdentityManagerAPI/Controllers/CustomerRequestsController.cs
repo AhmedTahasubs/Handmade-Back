@@ -24,7 +24,7 @@ namespace IdentityManagerAPI.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<CustomerRequestResponse>>> GetAll()
         {
             var requests = await _service.GetAllAsync();
@@ -32,7 +32,6 @@ namespace IdentityManagerAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Create([FromForm] CreateCustomerRequestDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

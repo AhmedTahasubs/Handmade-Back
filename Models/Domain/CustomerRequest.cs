@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Models.Domain
 {
-    public enum RequestStatus
+    public static class RequestStatus
     {
-        Pending,
-        Accepted,
-        Rejected,
-        InProgress,
-        Completed
+        public static string Pending { get; set; } = "Pending";
+        public static string Approved { get; set; } = "Approved";
+        public static string Rejected { get; set; } = "Rejected";
+        public static string InProgress { get; set; } = "InProgress";
+        public static string Completed  { get; set; } = "Completed";
     }
     public class CustomerRequest
     {
@@ -37,7 +37,7 @@ namespace Models.Domain
         public string? ReferenceImageUrl { get; set; }
 
         [Required]
-        public RequestStatus Status { get; set; } = RequestStatus.Pending;
+        public string Status { get; set; } = RequestStatus.Pending;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
