@@ -44,9 +44,10 @@ namespace DataAcess.Services
                 var image = new Image
                 {
                     File = dto.File,
-                    FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
-                    FileExtension = Path.GetExtension(dto.File.FileName)
-                };
+                    FileName = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
+                    FileExtension = Path.GetExtension(dto.File.FileName),
+					FileSize = dto.File.Length
+				};
 
                 var uploadedImage = await _imageRepo.Upload(image);
 
