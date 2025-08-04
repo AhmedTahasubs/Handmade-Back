@@ -92,6 +92,9 @@ namespace DataAcess.Services
         {
             return await _context.CustomerRequests
                 .Where(r => r.SellerId == sellerId)
+                .Include(r => r.Buyer)
+                .Include(r => r.Seller)
+                .Include(r => r.Service)
                 .Select(r => MapToResponse(r))
                 .ToListAsync();
         }
@@ -100,6 +103,9 @@ namespace DataAcess.Services
         {
             return await _context.CustomerRequests
                 .Where(r => r.BuyerId == customerId)
+                .Include(r => r.Buyer)
+                .Include(r => r.Seller)
+                .Include(r => r.Service)
                 .Select(r => MapToResponse(r))
                 .ToListAsync();
         }
@@ -146,6 +152,9 @@ namespace DataAcess.Services
             BuyerId = request.BuyerId,
             SellerId = request.SellerId,
             ServiceId = request.ServiceId,
+            BuyerName = request.Buyer?.UserName,
+            SellerName = request.Seller?.UserName,
+            ServiceTitle = request.Service?.Name,
             Description = request.Description,
             ReferenceImageUrl = request.ReferenceImageUrl,
             Status = request.Status,
