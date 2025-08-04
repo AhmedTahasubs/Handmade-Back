@@ -64,5 +64,15 @@ namespace IdentityManagerAPI.Controllers
             var success = await _service.UpdateStatusAsync(id, status);
             return success ? Ok() : NotFound();
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var request = await _service.GetByIdAsync(id);
+            if (request == null)
+            {
+                return NotFound();
+            }
+            return Ok(request);
+        }
     }
 }
