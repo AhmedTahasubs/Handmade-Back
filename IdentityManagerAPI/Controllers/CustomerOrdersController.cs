@@ -58,6 +58,14 @@ namespace IdentityManagerAPI.Controllers
             var items = await _orderService.GetOrdersBySellerAsync(sellerId);
             return Ok(items);
         }
+        [HttpGet("seller/{id}")]
+        public async Task<IActionResult> GetOrdersBySeller(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound(new { message = "seller Not Found" });
+            var items = await _orderService.GetOrdersBySellerAsync(id);
+            return Ok(items);
+        }
 
         [HttpPatch("items/{orderItemId}/status")]
         public async Task<IActionResult> UpdateOrderItemStatus(int orderItemId, [FromBody] UpdateOrderItemStatusRequest request)
