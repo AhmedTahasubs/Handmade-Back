@@ -48,7 +48,7 @@ namespace IdentityManager.Services.ControllerService
             {
                 var img = new Image
                 {
-                    FileName = Path.GetFileNameWithoutExtension(dto.File.FileName),
+                    FileName = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
                     FileExtension = Path.GetExtension(dto.File.FileName),
                     FileSize = dto.File.Length,
                     File = dto.File
