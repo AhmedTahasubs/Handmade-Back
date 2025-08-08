@@ -86,5 +86,14 @@ namespace IdentityManagerAPI.Controllers
 
             return Ok(order);
         }
+        [HttpGet("seller/items")]
+        public async Task<IActionResult> GetitemsBySeller()
+        {
+            var sellerId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(sellerId))
+                return Unauthorized("Seller ID not found in claims.");
+            var items = await _orderService.GetItemsBySeller(sellerId);
+            return Ok(items);
+        }
     }
 }
