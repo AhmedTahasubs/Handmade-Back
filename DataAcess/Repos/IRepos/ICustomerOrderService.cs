@@ -15,5 +15,6 @@ namespace DataAcess.Repos.IRepos
         Task<List<SellerOrderItemResponse>> GetOrdersBySellerAsync(string sellerId);
         Task<bool> UpdateOrderItemStatusAsync(int orderItemId, string newStatus);
         Task<OrderResponse?> GetOrderByIdAsync(int orderId);
+        Task<List<CustomerOrderItem>> GetItemsBySeller(string sellerId);
     }
 }

@@ -18,5 +18,6 @@ namespace Models.Domain
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice => Quantity * UnitPrice;
         public string Status { get; set; } = null!;
+        public int ProductId { get; set; } 
     }
 }
