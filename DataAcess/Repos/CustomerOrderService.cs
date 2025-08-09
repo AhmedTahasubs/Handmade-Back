@@ -97,6 +97,7 @@ namespace DataAcess.Repos
                     OrderId = i.CustomerOrderId,
                     CreatedAt = i.CustomerOrder.CreatedAt,
                     CustomerName = i.CustomerOrder.CustomerId,
+                    ProductId = i.Product.Id ,
                     CustomerPhone = i.CustomerOrder.PhoneNumber,
                     ProductTitle = i.Product.Title,
                     ProductImageUrl = i.Product.Image!.FilePath,
@@ -104,6 +105,13 @@ namespace DataAcess.Repos
                     UnitPrice = i.UnitPrice,
                     Status = i.Status
                 }).ToListAsync();
+        }
+
+        public async Task<List<CustomerOrderItem>> GetItemsBySeller(string sellerId)
+        {
+            return await _context.CustomerOrderItems
+                .Where(i => i.SellerId == sellerId).Include(i=>i.Product).ToListAsync();
+
         }
 
         private OrderResponse MapOrderToResponse(CustomerOrder order)
@@ -160,5 +168,6 @@ namespace DataAcess.Repos
 
             return MapOrderToResponse(order);
         }
+
     }
 }
