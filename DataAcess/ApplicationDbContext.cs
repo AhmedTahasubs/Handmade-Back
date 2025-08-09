@@ -34,7 +34,8 @@ namespace DataAcess
         public DbSet<CustomerOrderItem> CustomerOrderItems { get; set; }
         // new custom request
         public DbSet<CustomerRequest> CustomerRequests { get; set; }
-        protected override void OnModelCreating(ModelBuilder builder)
+		public DbSet<Payment> Payments { get; set; }
+		protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             // ✅ Category

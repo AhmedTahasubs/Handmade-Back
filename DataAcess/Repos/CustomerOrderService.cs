@@ -48,8 +48,9 @@ namespace DataAcess.Repos
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     SellerId = item.Product.SellerId!
-                }).ToList()
-            };
+                }).ToList(),
+				TotalAmount = cart.Items.Sum(item => item.Quantity * item.UnitPrice)
+			};
 
             _context.CustomerOrders.Add(order);
             _context.ShoppingCarts.Remove(cart);

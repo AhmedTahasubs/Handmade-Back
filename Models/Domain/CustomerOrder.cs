@@ -14,8 +14,10 @@ namespace Models.Domain
         public string Address { get; set; } = null!;
         public string PaymentMethod { get; set; } = null!;
         public string PaymentStatus { get; set; } = "Pending";
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+		public decimal TotalAmount { get; set; }
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+		public Payment? Payment { get; set; }
         public List<CustomerOrderItem> Items { get; set; } = new();
     }
 }
