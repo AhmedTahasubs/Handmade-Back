@@ -22,9 +22,10 @@ using Models.DTOs.Mapper;
 using Scalar.AspNetCore;
 using Services;
 using StackExchange.Redis;
+using X.Paymob.CashIn;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var configuration = builder.Configuration;
 
 
 // Add services to the container.
@@ -63,6 +64,15 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceReviewRepository, ServiceReviewRepository>();
 builder.Services.AddScoped<IServiceReviewService, ServiceReviewService>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
+// Register the Paymob service
+builder.Services.AddPaymobCashIn(options =>
+{
+	options.ApiKey = configuration["Paymob:ApiKey"];
+	options.Hmac = configuration["Paymob:HMAC"];
+});
+
+// Register the IPaymob service
+builder.Services.AddScoped<IPaymobService, PaymobService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
 builder.Services.AddSignalR().AddStackExchangeRedis("localhost:6379");
 builder.Services.AddScoped<ImageRepository>();

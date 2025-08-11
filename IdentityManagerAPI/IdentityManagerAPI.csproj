@@ -10,6 +10,7 @@
 
 	
   <ItemGroup>
+    <PackageReference Include="Aspose.Slides.NET" Version="25.8.0" />
     <PackageReference Include="MailKit" Version="4.13.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
@@ -25,6 +26,8 @@
     <PackageReference Include="MimeKit" Version="4.13.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.0.18" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.58" />
+    <PackageReference Include="Xdot.Paymob.CashIn" Version="1.0.7" />
+    <PackageReference Include="Xdot.Paymob.CashIn.DependencyInjection" Version="1.0.7" />
   </ItemGroup>
 
   <ItemGroup>
