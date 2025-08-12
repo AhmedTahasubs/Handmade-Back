@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAcess.Repos.IRepos;
 using Microsoft.EntityFrameworkCore;
+using Models.Const;
 using Models.Domain;
 using Models.DTOs;
 using System;
@@ -68,6 +69,14 @@ namespace DataAcess.Repos
            return await db.SaveChangesAsync();
         }
 
-        
+        public async Task<Product?> UpdateProductReasonAsync(int id, string Reason)
+        {
+            var p = await db.Products.FindAsync(id);
+            if (p == null)
+                return null;
+            p.RejectionReason = Reason;
+            p.Status = ProductStatus.Rejected;
+            return p;
+        }
     }
 }
