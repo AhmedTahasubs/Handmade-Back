@@ -43,7 +43,7 @@ namespace Models.DTOs.Mapper
             // ProductUpdateDTO <-> Product
             CreateMap<ProductUpdateDTO, Models.Domain.Product>()
                 .AfterMap((src, dest) => {
-                    dest.Status = ProductStatus.Approved;
+                    dest.Status = ProductStatus.Pending;
                     dest.RejectionReason = null;
                     });
 
