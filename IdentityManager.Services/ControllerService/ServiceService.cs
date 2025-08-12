@@ -48,6 +48,8 @@ namespace IdentityManager.Services.ControllerService
             CategoryId = s.CategoryId,
             Products = _mapper.Map<List<ProductDisplayDTO>>(s.Products), // لو مفيش منتجات يبقى قائمة فاضية
             ImageUrl = s.ImageId.HasValue ? _imageRepo.GetImageUrl(s.ImageId.Value) : null
+            ,
+            Reason = s.Reason
         };
 
         // ✅ إنشاء خدمة جديدة
@@ -124,7 +126,7 @@ namespace IdentityManager.Services.ControllerService
             existing.BasePrice = dto.BasePrice;
             existing.DeliveryTime = dto.DeliveryTime;
             existing.Status = "pending";
-            existing.Reason = "";
+            existing.Reason = String.Empty;
             existing.CategoryId = dto.CategoryId;
 
             var updated = _repo.UPDATE(existing);
