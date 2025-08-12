@@ -20,5 +20,7 @@ namespace DataAcess.Repos.IRepos
         IEnumerable<Service> GetAllByCategoryId(int categoryId);
         IEnumerable<Service> GetAllByCategoryName(string categoryName);
         Task<Service?> UpdateServiceStatusAsync(int id, string status);
+        Task<Service?> UpdateServiceReason(int id, string status);
+
     }
 }

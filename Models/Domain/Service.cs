@@ -16,22 +16,25 @@ namespace Models.Domain
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 
-        // تفاصيل الخدمة
+       
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal BasePrice { get; set; }
-        public int DeliveryTime { get; set; } // بالأيام
-        public string Status { get; set; } = "active"; // active - paused - awiting
+        public int DeliveryTime { get; set; }
+        public string Status { get; set; } = "approved"; 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         
          public ICollection<Product> Products { get; set; }
 
-        // التقييمات
+      
         public ICollection<ServiceReview> Reviews { get; set; }
 
 
         public int? ImageId { get; set; }
         public Image Image { get; set; }
+
+
+        public string? Reason { get; set; }
     }
 }
