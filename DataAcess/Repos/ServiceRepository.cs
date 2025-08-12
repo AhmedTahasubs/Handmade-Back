@@ -99,6 +99,14 @@ namespace DataAcess.Repos
             return p;
         }
 
-
+        public async Task<Service?> UpdateServiceReason(int id, string status)
+        {
+           var s = await db.Services.FindAsync(id);
+            if (s==null)
+                return null;
+            s.Reason = status;
+            s.Status = "rejected";
+            return s;
+        }
     }
 }

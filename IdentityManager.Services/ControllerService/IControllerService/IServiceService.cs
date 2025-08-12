@@ -22,6 +22,7 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         IEnumerable<ServiceDto> GetMyServices();
         IEnumerable<ServiceDto> GetAllByCategoryName(string categoryName);
         Task<Service?> UpdateServiceStatusAsync(int id, UpdateServiceStatusDTO dto);
+        Task<Service?> UpdateServiceReason(int id, UpdateServiceReason dto);
 
 
     }
