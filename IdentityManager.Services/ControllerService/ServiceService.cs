@@ -123,7 +123,7 @@ namespace IdentityManager.Services.ControllerService
             existing.Description = dto.Description;
             existing.BasePrice = dto.BasePrice;
             existing.DeliveryTime = dto.DeliveryTime;
-            existing.Status = "approved";
+            existing.Status = "pending";
             existing.Reason = "";
             existing.CategoryId = dto.CategoryId;
 

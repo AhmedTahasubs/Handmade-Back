@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Models.Domain;
 using Models.DTOs;
-using Models.DTOs.image;
 using Models.DTOs;
+using Models.DTOs.image;
+using Models.DTOs.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,6 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         Task Delete(Product p);
         Task<int> UploadProductImageAsync(IFormFile File);
         Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto);
+        Task<Product?> UpdateProductReasonAsync(int id, ProductReasonDTO dto);
     }
 }

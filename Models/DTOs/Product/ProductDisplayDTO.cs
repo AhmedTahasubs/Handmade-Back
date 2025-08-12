@@ -22,5 +22,7 @@ namespace Models.DTOs
         public int ServiceId { get; set; }
         public string? ImageUrl {  get; set; }
         public string Category {  get; set; } = null!;
-	}
+        public string RejectionReason { get; set; } = string.Empty;
+
+    }
 }

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Models.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Models.DTOs.Product;
 
 namespace IdentityManager.Services.ControllerService
 {
@@ -150,6 +151,12 @@ namespace IdentityManager.Services.ControllerService
         public async Task<Product?> UpdateProductStatusAsync(int id, UpdateProductStatusDTO dto)
         {
             var prod = await productRepo.UpdateProductStatusAsync(id, dto.Status);
+            await productRepo.SaveAsync();
+            return prod;
+        }
+        public async Task<Product?> UpdateProductReasonAsync(int id, ProductReasonDTO dto)
+        {
+            var prod = await productRepo.UpdateProductReasonAsync(id, dto.RejectionReason);
             await productRepo.SaveAsync();
             return prod;
         }

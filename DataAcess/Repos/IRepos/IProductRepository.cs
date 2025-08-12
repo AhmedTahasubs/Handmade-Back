@@ -17,6 +17,7 @@ namespace DataAcess.Repos.IRepos
 
         Task CreateProductAsync(Product product);
         Task UpdateProductAsync(Product product);
+        Task<Product> UpdateProductReasonAsync(int id, string Reason);
         Task DeleteProductAsync(Product p);
         Task<int> SaveAsync();
         Task<Product?> UpdateProductStatusAsync(int id, string status);
