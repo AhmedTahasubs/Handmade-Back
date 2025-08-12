@@ -136,6 +136,7 @@ namespace DataAcess.Repos
 				NormalizedEmail = customerRegisterDto.Email.ToUpper(),
 				HasWhatsApp = customerRegisterDto.HasWhatsApp,
 				Address = customerRegisterDto.Address,
+                PhoneNumber = customerRegisterDto.MobileNumber
 			};
 
 			var userDTO = new UserDTO();
@@ -171,7 +172,8 @@ namespace DataAcess.Repos
                 NormalizedEmail = sellerRegisterDto.Email.ToUpper(),
                 NationalId = sellerRegisterDto.NationalId,
                 Bio = sellerRegisterDto.Bio,
-            };
+				PhoneNumber = sellerRegisterDto.MobileNumber
+			};
 
             var userDTO = new UserDTO();
 
