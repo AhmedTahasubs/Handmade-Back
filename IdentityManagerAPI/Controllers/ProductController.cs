@@ -178,14 +178,22 @@ namespace IdentityManagerAPI.Controllers
                 return StatusCode(500, "An error occurred while updating all product embeddings.");
             }
         }
-        [HttpPatch("update-reason{id}")]
+        [HttpPatch("Reason/{id}")]
         [Authorize(Roles = AppRoles.Admin)]
-        public async Task<IActionResult> PutReason([FromRoute] int id, [FromForm] ProductReasonDTO dto)
+        public async Task<IActionResult> PutReason([FromRoute] int id, [FromBody] ProductReasonDTO dto)
         {
-            var prod = await productService.UpdateProductReasonAsync(id, dto);
-            if (prod == null)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var prod = await productService.UpdateProductReasonAsync(id, dto);
+                if (prod == null)
+                    return NotFound(new { message = "Product not found" });
+
+                return Ok(new { message = "Reason updated successfully", reason = prod.RejectionReason });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
