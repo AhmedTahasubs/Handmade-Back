@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.Const;
 using Models.DTOs;
 using Models.DTOs.Service;
+using Models.DTOs.ServiceReview;
 
 namespace IdentityManagerAPI.Controllers
 {
@@ -104,5 +105,28 @@ namespace IdentityManagerAPI.Controllers
             }
         }
 
+        [HttpPatch("Reason/{id}")]
+        
+        [Authorize(Roles = AppRoles.Admin)]
+        public async Task<IActionResult> UpdateServiceReason([FromRoute] int id, [FromBody] UpdateServiceReason dto)
+        {
+            try
+            {
+                var prod = await _service.UpdateServiceReason(id, dto);
+                if (prod == null)
+                    return NotFound(new { message = "Service not found" });
+
+                return Ok(new { message = "Reason updated successfully", reason = prod.Reason });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
+
+    
+
+
+

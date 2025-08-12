@@ -69,6 +69,11 @@ namespace Models.DTOs.Mapper
             CreateMap<CustomRequest, CustomRequestReadDto>();
             CreateMap<CustomRequestCreateDto, CustomRequest>();
             CreateMap<CustomRequestUpdateDto, CustomRequest>();
+
+
+            // customer order
+            CreateMap<CustomerOrder, OrderResponse>()
+            .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.Customer.FullName));
         }
     }
 }

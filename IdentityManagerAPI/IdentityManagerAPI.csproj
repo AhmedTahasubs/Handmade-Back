@@ -40,6 +40,7 @@
     <Folder Include="NewFolder1\" />
     <Folder Include="Images\" />
     <Folder Include="Images\" />
+    <Folder Include="Images\" />
     <Folder Include="NewFolder\" />
   </ItemGroup>
 

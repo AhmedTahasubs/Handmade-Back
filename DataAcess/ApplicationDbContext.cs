@@ -119,6 +119,12 @@ namespace DataAcess
                 .HasForeignKey(r => r.ServiceId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            builder.Entity<CustomerOrder>()
+                .HasOne(o => o.Customer)
+                .WithMany() // or .WithMany(u => u.Orders) if you add a collection on ApplicationUser
+                .HasForeignKey(o => o.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

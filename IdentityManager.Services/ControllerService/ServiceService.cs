@@ -81,7 +81,7 @@ namespace IdentityManager.Services.ControllerService
                 Description = dto.Description,
                 BasePrice = dto.BasePrice,
                 DeliveryTime = dto.DeliveryTime,
-                Status = "pending", 
+                Status = "approved", 
                 SellerId = sellerId,  
                 CategoryId = dto.CategoryId,
                 ImageId = imageId
@@ -123,7 +123,8 @@ namespace IdentityManager.Services.ControllerService
             existing.Description = dto.Description;
             existing.BasePrice = dto.BasePrice;
             existing.DeliveryTime = dto.DeliveryTime;
-            //existing.Status = dto.Status ?? existing.Status;
+            existing.Status = "pending";
+            existing.Reason = "";
             existing.CategoryId = dto.CategoryId;
 
             var updated = _repo.UPDATE(existing);
@@ -206,6 +207,14 @@ namespace IdentityManager.Services.ControllerService
             return prod;
         }
 
+        public async Task<Service?> UpdateServiceReason(int id, UpdateServiceReason dto)
+        {
+            var ser = await _repo.UpdateServiceReason(id, dto.Reason);
+            if (ser == null)
+                return null;
 
+            _repo.SavaChange();
+            return ser;
+        }
     }
 }

@@ -28,6 +28,7 @@ namespace DataAcess.Repos
         public async Task<OrderResponse> CreateOrderAsync(CreateOrderRequest request)
         {
             var cart = await _context.ShoppingCarts
+                .Include(o => o.Customer)
                 .Include(c => c.Items)
                 .ThenInclude(ci => ci.Product)
                 .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId);
@@ -66,6 +67,7 @@ namespace DataAcess.Repos
         public async Task<List<OrderResponse>> GetAllOrdersAsync()
         {
             var orders = await _context.CustomerOrders
+                .Include(o => o.Customer)
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .ThenInclude(p => p.Image)
@@ -78,6 +80,7 @@ namespace DataAcess.Repos
         {
             var orders = await _context.CustomerOrders
                 .Where(o => o.CustomerId == customerId)
+                .Include(o => o.Customer)
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .ThenInclude(p => p.Image)
@@ -96,7 +99,7 @@ namespace DataAcess.Repos
                 {
                     OrderId = i.CustomerOrderId,
                     CreatedAt = i.CustomerOrder.CreatedAt,
-                    CustomerName = i.CustomerOrder.CustomerId,
+                    CustomerName = i.CustomerOrder.Customer.FullName ?? i.CustomerOrder.CustomerId,
                     ProductId = i.Product.Id ,
                     CustomerPhone = i.CustomerOrder.PhoneNumber,
                     ProductTitle = i.Product.Title,
@@ -119,7 +122,7 @@ namespace DataAcess.Repos
             return new OrderResponse
             {
                 Id = order.Id,
-                CustomerId = order.CustomerId,
+                CustomerName = order.Customer?.FullName ?? "Unknown",
                 CreatedAt = order.CreatedAt,
                 TotalPrice = order.Items.Sum(i => i.Quantity * i.UnitPrice),
                 Items = order.Items.Select(i => new OrderItemResponse
@@ -158,6 +161,7 @@ namespace DataAcess.Repos
         public async Task<OrderResponse?> GetOrderByIdAsync(int orderId)
         {
             var order = await _context.CustomerOrders
+                .Include(s=>s.Customer)
                 .Include(o => o.Items)
                 .ThenInclude(i => i.Product)
                 .ThenInclude(p => p.Image)
