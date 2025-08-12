@@ -95,5 +95,22 @@ namespace IdentityManagerAPI.Controllers
             var items = await _orderService.GetItemsBySeller(sellerId);
             return Ok(items);
         }
+
+        [HttpDelete("cancel/{orderId}")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            try
+            {
+                var result = await _orderService.CancelOrderAsync(orderId);
+                if (!result)
+                    return NotFound("Order not found.");
+
+                return Ok("Order cancelled and stock restored successfully.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

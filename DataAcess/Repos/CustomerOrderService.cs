@@ -173,5 +173,30 @@ namespace DataAcess.Repos
             return MapOrderToResponse(order);
         }
 
+        public async Task<bool> CancelOrderAsync(int orderId)
+        {
+            var order = await _context.CustomerOrders
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+                return false;
+
+            if (order.PaymentStatus == "Delivered")
+                throw new InvalidOperationException("Cannot cancel an order that has been delivered.");
+
+            // Restore stock
+            foreach (var item in order.Items)
+            {
+                if (item.Product != null)
+                    item.Product.Quantity += item.Quantity;
+            }
+
+            _context.CustomerOrders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
