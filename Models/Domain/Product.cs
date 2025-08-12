@@ -21,6 +21,7 @@ namespace Models.Domain
 
         // Status & Timestamps
         public string Status { get; set; }
+        public string? RejectionReason {  get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Foreign Keys
