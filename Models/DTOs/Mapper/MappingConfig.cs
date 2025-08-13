@@ -23,8 +23,16 @@ namespace Models.DTOs.Mapper
 				{
 					dest.Imageurl = src?.Image?.FilePath ?? "https://localhost:7047/images/avatar.png";
 				});
-			CreateMap<ApplicationUser, UserMangementDto>().ReverseMap();
-			//Category
+            CreateMap<ApplicationUser, UserMangementDto>()
+                .ForMember(dest => dest.ProfileImageUrl, opt => opt.MapFrom(src => src.Image.FilePath))
+                .ForMember(dest => dest.IdCardImageUrl, opt => opt.MapFrom(src => src.IdCardImage.FilePath));
+
+				//.AfterMap((src, dest) =>
+				//{
+				//    dest.ProfileImageUrl = src?.Image?.FilePath;
+				//    dest.IdCardImageUrl = src?.IdCardImage?.FilePath;
+				//}).ReverseMap();
+				//Category
 			CreateMap<CreateCategoryDto, Category>().ReverseMap();
 
             // Product

@@ -11,7 +11,8 @@ namespace Models.DTOs.image
     public class ImageUploadRequestDto
     {
         [Required]
-        public IFormFile File { get; set; } = null!;
-
+        public IFormFile? ProfileImage { get; set; } = null!;
+		[Required]
+		public IFormFile? IdCardImage { get; set; } = null!;
 	}
 }

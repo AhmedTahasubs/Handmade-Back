@@ -18,7 +18,7 @@ namespace DataAcess.Repos.IRepos
         Task<UserDTO> RegisterCustomer(CustomerRegisterDto customerRegisterDto);
         Task<ApplicationUser> GetUserByID(string userID);
         Task<bool> UpdateAsync(ApplicationUser user);
-        Task DeleteUser(ApplicationUser user);
+        Task UpdateUser(ApplicationUser user);
 
 	}
 }

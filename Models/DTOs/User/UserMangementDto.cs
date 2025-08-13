@@ -16,5 +16,9 @@ namespace Models.DTOs.User
 		public bool IsDeleted { get; set; }
 		public DateTime? LastUpdatedOn { get; set; }
 		public List<string> Roles { get; set; } = new List<string>();
+		public string? NationalId { get; set; }
+		public string? ProfileImageUrl { get; set; }
+		public string? IdCardImageUrl { get; set; }
+
 	}
 }

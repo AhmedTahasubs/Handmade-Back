@@ -4,6 +4,7 @@ using DataAcess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAcess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250812192438_AddIsVerifiedCloumnToApplicationUserTable")]
+    partial class AddIsVerifiedCloumnToApplicationUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -902,9 +905,6 @@ namespace DataAcess.Migrations
                     b.Property<bool>("HasWhatsApp")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("IdCardImageId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ImageId")
                         .HasColumnType("int");
 
@@ -912,6 +912,9 @@ namespace DataAcess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastUpdatedById")
@@ -923,12 +926,6 @@ namespace DataAcess.Migrations
                     b.Property<string>("NationalId")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("IdCardImageId");
 
                     b.HasIndex("ImageId");
 
@@ -1306,15 +1303,9 @@ namespace DataAcess.Migrations
 
             modelBuilder.Entity("Models.Domain.ApplicationUser", b =>
                 {
-                    b.HasOne("Models.Domain.Image", "IdCardImage")
-                        .WithMany()
-                        .HasForeignKey("IdCardImageId");
-
                     b.HasOne("Models.Domain.Image", "Image")
                         .WithMany()
                         .HasForeignKey("ImageId");
-
-                    b.Navigation("IdCardImage");
 
                     b.Navigation("Image");
                 });
