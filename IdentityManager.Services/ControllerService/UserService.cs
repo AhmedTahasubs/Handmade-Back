@@ -51,13 +51,13 @@ namespace IdentityManager.Services.ControllerService
 			return usersDto;
 		}
 
-		public async Task<IEnumerable<UserMangementDto>> GetAllUnVerifiedSellers()
+		public async Task<IEnumerable<UserMangementDto>> GetAllPendingSellers()
 		{
 			var users = await _userRepo.GetAllAsync(includes: "Image,IdCardImage");
 			var sellers = new List<UserMangementDto>();
 			foreach (var user in users)
 			{
-				if (await _userManager.IsInRoleAsync(user, AppRoles.Seller) && user.Status == VerificationStatus.Unverified)
+				if (await _userManager.IsInRoleAsync(user, AppRoles.Seller) && user.Status == VerificationStatus.Pending)
 				{
 					sellers.Add(_mapper.Map<UserMangementDto>(user));
 				}
@@ -100,6 +100,7 @@ namespace IdentityManager.Services.ControllerService
 				await _imageRepo.Upload(idCardImage);
 				user.IdCardImageId = idCardImage.Id;
 			}
+			user.Status = VerificationStatus.Pending;
 
 			await _userRepo.UpdateAsync(user);
 			return user;

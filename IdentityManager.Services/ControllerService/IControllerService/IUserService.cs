@@ -16,7 +16,7 @@ namespace IdentityManager.Services.ControllerService.IControllerService
         Task<IEnumerable<UserMangementDto>> GetAllUsers();
         Task DeleteUser(string userId);
         Task ChangeSellerStatus(string userId, string status);
-        Task<IEnumerable<UserMangementDto>> GetAllUnVerifiedSellers();
+        Task<IEnumerable<UserMangementDto>> GetAllPendingSellers();
         Task<string> GetSellerStatus(string userId);
 	}
 }
