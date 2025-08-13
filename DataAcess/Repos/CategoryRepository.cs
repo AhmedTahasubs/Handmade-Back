@@ -21,7 +21,7 @@ namespace DataAcess.Repos
 
         public async Task<IEnumerable<Category>> GetAllAsync() => await _db.Categories.Where(c => !c.IsDeleted).ToListAsync();
 
-        public async Task<Category> GetByIdAsync(int id) => await _db.Categories.FindAsync(id);
+        public async Task<Category> GetByIdAsync(int id) => await _db.Categories.Include(s=>s.Services).FirstOrDefaultAsync(c=> c.Id==id);
 
         public async Task<Category> AddAsync(Category category)
         {

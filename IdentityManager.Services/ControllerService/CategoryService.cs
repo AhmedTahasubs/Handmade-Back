@@ -25,6 +25,8 @@ namespace IdentityManager.Services.ControllerService
             Id = c.Id,
             Name = c.Name,
             ImageUrl = c.ImageId.HasValue ? _imageService.GetImageUrl(c.ImageId.Value) : null
+            ,
+            serviceCount = c.Services?.Count ?? 0
         };
 
         public async Task<IEnumerable<CategoryDto>> GetAllAsync()
