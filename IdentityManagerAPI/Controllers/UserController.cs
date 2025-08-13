@@ -69,10 +69,10 @@ namespace IdentityManagerAPI.Controllers
 			return NoContent();
 		}
 
-		[HttpGet("UnVerifiedSellers")]
+		[HttpGet("PendingSellers")]
 		public async Task<IActionResult> GetAllUnVerifiedUsers()
 		{
-			var sellers = await userService.GetAllUnVerifiedSellers();
+			var sellers = await userService.GetAllPendingSellers();
 			return Ok(sellers);
 		}
 
@@ -81,7 +81,7 @@ namespace IdentityManagerAPI.Controllers
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			var status = await userService.GetSellerStatus(userId);
-			return Ok(status);
+			return Ok(new { status });
 		}
 	}
 }
