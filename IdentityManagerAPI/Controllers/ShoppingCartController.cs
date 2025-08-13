@@ -43,7 +43,8 @@ namespace IdentityManagerAPI.Controllers
                     ProductImageUrl = item.Product.Image?.FilePath ?? "",
                     ArtisanName = item.Product.User?.FullName ?? "Unknown",
                     Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice
+                    UnitPrice = item.UnitPrice,
+                    inStock=item.Product.Quantity
                 }).ToList()
             };
 
