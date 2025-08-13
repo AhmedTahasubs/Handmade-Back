@@ -60,5 +60,28 @@ namespace IdentityManagerAPI.Controllers
 			await userService.DeleteUser(id);
 			return NoContent();
 		}
+
+		[HttpPost("EditSellerStatus/{id}")]
+		//[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> EditSellerStatus([FromRoute] string id, [FromBody] UpdateOrderItemStatusRequest request)
+		{
+			await userService.ChangeSellerStatus(id, request.Status);
+			return NoContent();
+		}
+
+		[HttpGet("UnVerifiedSellers")]
+		public async Task<IActionResult> GetAllUnVerifiedUsers()
+		{
+			var sellers = await userService.GetAllUnVerifiedSellers();
+			return Ok(sellers);
+		}
+
+		[HttpGet("SellerStatus")]
+		public async Task<IActionResult> IsVerifiedSeller()
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var status = await userService.GetSellerStatus(userId);
+			return Ok(status);
+		}
 	}
 }

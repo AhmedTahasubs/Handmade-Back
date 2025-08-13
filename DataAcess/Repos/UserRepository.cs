@@ -39,7 +39,7 @@ namespace DataAcess.Repos
             securityKey = configuration.GetValue<string>("ApiSettings:Secret") ?? throw new InvalidOperationException("ApiSettings:Secret is not configured.");
         }
 
-		public async Task DeleteUser(ApplicationUser user)
+		public async Task UpdateUser(ApplicationUser user)
 		{
 			  await userManager.UpdateAsync(user);
 		}
@@ -172,7 +172,8 @@ namespace DataAcess.Repos
                 NormalizedEmail = sellerRegisterDto.Email.ToUpper(),
                 NationalId = sellerRegisterDto.NationalId,
                 Bio = sellerRegisterDto.Bio,
-				PhoneNumber = sellerRegisterDto.MobileNumber
+				PhoneNumber = sellerRegisterDto.MobileNumber,
+				Status = VerificationStatus.Unverified
 			};
 
             var userDTO = new UserDTO();
@@ -197,9 +198,6 @@ namespace DataAcess.Repos
 
             return userDTO;
         }
-
-
-
         public async Task<bool> UpdateAsync(ApplicationUser user)
         {
             var existingUser = await db.ApplicationUser.FindAsync(user.Id);
@@ -213,7 +211,12 @@ namespace DataAcess.Repos
                 existingUser.ImageId = user.ImageId;
             }
 
-            var result = await db.SaveChangesAsync();
+			if (user.IdCardImageId != 0 || user.IdCardImageId != null)
+			{
+				existingUser.IdCardImageId = user.IdCardImageId;
+			}
+
+			var result = await db.SaveChangesAsync();
             return result > 0;
         }
 
