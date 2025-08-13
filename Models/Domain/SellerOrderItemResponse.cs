@@ -8,6 +8,7 @@ namespace Models.Domain
 {
     public class SellerOrderItemResponse
     {
+        public int id { get; set; }
         public int OrderId { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CustomerName { get; set; } = null!;

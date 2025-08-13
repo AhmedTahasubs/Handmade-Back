@@ -97,6 +97,7 @@ namespace DataAcess.Repos
                 .Include(i => i.Product)
                 .Select(i => new SellerOrderItemResponse
                 {
+                    id=i.Id,
                     OrderId = i.CustomerOrderId,
                     CreatedAt = i.CustomerOrder.CreatedAt,
                     CustomerName = i.CustomerOrder.Customer.FullName ?? i.CustomerOrder.CustomerId,
