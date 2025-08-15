@@ -19,7 +19,7 @@ namespace DataAcess.Repos
             _db = db;
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync() => await _db.Categories.Where(c => !c.IsDeleted).ToListAsync();
+        public async Task<IEnumerable<Category>> GetAllAsync() => await _db.Categories.Where(c => !c.IsDeleted).Include(a=>a.Services).ToListAsync();
 
         public async Task<Category> GetByIdAsync(int id) => await _db.Categories.Include(s=>s.Services).FirstOrDefaultAsync(c=> c.Id==id);
 
