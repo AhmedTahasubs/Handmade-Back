@@ -153,7 +153,8 @@ namespace DataAcess.Repos
                 Console.WriteLine($"Order item with ID {orderItemId} not found.");
                 return false;
             }
-
+            var product = _context.Products.Find(orderItem.ProductId);
+            product.Quantity -= orderItem.Quantity;
             orderItem.Status = parsedStatus.ToString();
             await _context.SaveChangesAsync();
 
