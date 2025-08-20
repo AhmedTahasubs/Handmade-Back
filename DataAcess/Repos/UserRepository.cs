@@ -173,7 +173,8 @@ namespace DataAcess.Repos
                 NationalId = sellerRegisterDto.NationalId,
                 Bio = sellerRegisterDto.Bio,
 				PhoneNumber = sellerRegisterDto.MobileNumber,
-				Status = VerificationStatus.Unverified
+				Status = VerificationStatus.Unverified,
+				Address = sellerRegisterDto.Address
 			};
 
             var userDTO = new UserDTO();
